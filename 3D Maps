@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <title>3D Map & BIM Viewer</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    
+    <!-- Import CSS Maplibre untuk layout peta -->
+    <link href="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.css" rel="stylesheet" />
+    
+    <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        
+        /* Desain UI Panel Samping */
+        .sidebar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1;
+            max-width: 300px;
+        }
+        h3 { margin-top: 0; color: #333; }
+        .info-box { font-size: 14px; color: #666; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+<!-- Panel Informasi -->
+<div class="sidebar">
+    <h3>BIM 3D Map Viewer</h3>
+    <div class="info-box">
+        <p><strong>Status:</strong> Peta 3D Berhasil Dimuat</p>
+        <p>Gunakan <strong>Klik Kanan + Tarik</strong> untuk memutar sudut pandang kamera (Pitch & Bearing).</p>
+    </div>
+</div>
+
+<!-- Container Tempat Peta Muncul -->
+<div id="map"></div>
+
+<!-- Import Library JavaScript Utama -->
+<script src="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+<script>
+    // 1. TENTUKAN KOORDINAT (Tempat model 3D Anda akan diletakkan di bumi)
+    // Contoh di bawah menggunakan koordinat Monas, Jakarta
+    const modelOrigin = [106.8271, -6.1754]; 
+    const modelAltitude = 0;
+    const modelRotate = [Math.PI / 2, 0, 0];
+
+    const modelAsMercator = maplibregl.MercatorCoordinate.fromLngLat(modelOrigin, modelAltitude);
+
+    // Transformasi matematika agar Three.js sinkron dengan koordinat Peta
+    const modelTransform = {
+        translateX: modelAsMercator.x,
+        translateY: modelAsMercator.y,
+        translateZ: modelAsMercator.z,
+        rotateX: modelRotate[0],
+        rotateY: modelRotate[1],
+        rotateZ: modelRotate[2],
+        scale: modelAsMercator.meterInMercatorCoordinateUnits()
+    };
+
+    // 2. INISIALISASI PETA 3D
+    const map = new maplibregl.Map({
+        container: 'map',
+        style: 'https://demotiles.maplibre.org/style.json', // Menggunakan style default maplibre
+        center: modelOrigin,
+        zoom: 17,
+        pitch: 60, // Memiringkan kamera agar efek 3D terlihat nyata
+        bearing: -20
+    });
+
+    // 3. MEMBUAT CUSTOM LAYER UNTUK MENAMPILKAN MODEL 3D
+    const customLayer = {
+        id: '3d-model-layer',
+        type: 'custom',
+        renderingMode: '3d',
+        onAdd: function (map, gl) {
+            this.camera = new THREE.Camera();
+            this.scene = new THREE.Scene();
+
+            // Menambahkan Pencahayaan (Lighting) agar model terlihat terang
+            const directionalLight = new THREE.DirectionalLight(0xffffff);
+            directionalLight.position.set(0, -70, 100).normalize();
+            this.scene.add(directionalLight);
+
+            const ambientLight = new THREE.AmbientLight(0x404040, 2);
+            this.scene.add(ambientLight);
+
+            // MEMANGGIL MODEL 3D (File IFC Anda yang sudah di-convert ke .glb/.gltf)
+            const loader = new THREE.GLTFLoader();
+            // Ganti 'model_bangunan.glb' dengan URL atau path file model 3D Anda
+            loader.load('model_bangunan.glb', (gltf) => {
+                this.scene.add(gltf.scene);
+            }, 
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total * 100) + '% terload');
+            },
+            (error) => {
+                console.error('Terjadi kesalahan saat memuat model:', error);
+            });
+
+            this.map = map;
+            this.renderer = new THREE.WebGLRenderer({
+                canvas: map.getCanvas(),
+                context: gl,
+                antialias: true
+            });
+            this.renderer.autoClear = false;
+        },
+        render: function (gl, matrix) {
+            const rotationX = new THREE.Matrix4().makeRotationX(modelTransform.rotateX);
+            const rotationY = new THREE.Matrix4().makeRotationY(modelTransform.rotateY);
+            const rotationZ = new THREE.Matrix4().makeRotationZ(modelTransform.rotateZ);
+
+            const m = new THREE.Matrix4().fromArray(matrix);
+            const l = new THREE.Matrix4()
+                .makeTranslation(
+                    modelTransform.translateX,
+                    modelTransform.translateY,
+                    modelTransform.translateZ
+                )
+                .scale(
+                    new THREE.Vector3(
+                        modelTransform.scale,
+                        -modelTransform.scale,
+                        modelTransform.scale
+                    )
+                )
+                .multiply(rotationX)
+                .multiply(rotationY)
+                .multiply(rotationZ);
+
+            this.camera.projectionMatrix = m.multiply(l);
+            this.renderer.resetState();
+            this.renderer.render(this.scene, this.camera);
+            this.map.triggerRepaint();
+        }
+    };
+
+    // 4. JALANKAN LAYER DI ATAS PETA SAAT PETA SELESAI DI-LOAD
+    map.on('style.load', () => {
+        map.addLayer(customLayer);
+    });
+</script>
+</body>
+</html>
