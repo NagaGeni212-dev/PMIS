@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PMIS - Proyek Tol IKN (3D Map View CartoCDN)</title>
+    <title>PMIS - Proyek Tol IKN (Active Countdown)</title>
     <link href="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.css" rel="stylesheet" />
     
     <style>
@@ -80,42 +80,19 @@
         .pm-box { text-align: center; font-size: 11px; border-top: 1px solid #EEE; padding-top: 8px; }
         .pm-name { color: var(--primary-red); font-weight: bold; font-size: 12px; }
         .btn-document { background: #0056b3; color: white; text-align: center; padding: 6px; font-size: 11px; font-weight: bold; border-radius: 3px; text-decoration: none; display: block; margin: 8px 0; }
-        .countdown-box { background: #333; color: #FFC000; font-family: monospace; font-size: 20px; text-align: center; padding: 8px; letter-spacing: 2px; font-weight: bold; border-radius: 4px; margin-top: auto; }
+        
+        /* STYLE COUNTDOWN BOX - Font monospace agar angka tidak bergeser saat berganti */
+        .countdown-box { background: #333; color: #FFC000; font-family: 'Courier New', Courier, monospace; font-size: 18px; text-align: center; padding: 8px; letter-spacing: 1px; font-weight: bold; border-radius: 4px; margin-top: auto; }
         
         .mini-map { aspect-ratio: 16 / 9; background: #DDD; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #666; }
         .weather-box { display: flex; justify-content: space-between; font-size: 11px; background: var(--dark-blue); color: white; padding: 8px; border-radius: 4px; text-align: center; }
 
         /* KOLOM TENGAH */
         .center-column { display: flex; flex-direction: column; gap: 12px; }
-        
-        /* PETA UTAMA DENGAN ASPECT RATIO 16:9 */
-        .map-section { 
-            width: 100%;
-            aspect-ratio: 16 / 9; 
-            position: relative; 
-            border-radius: 4px; 
-            overflow: hidden; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-            background: #9cd3db; 
-        }
+        .map-section { width: 100%; aspect-ratio: 16 / 9; position: relative; border-radius: 4px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); background: #9cd3db; }
         #map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
-        /* UPDATE LABEL HEADER FLATING: MENJADI 3D MAP VIEW */
-        .map-floating-header { 
-            position: absolute; 
-            top: 10px; 
-            left: 10px; 
-            background: rgba(255,255,255,0.95); 
-            padding: 6px 14px; 
-            border-radius: 4px; 
-            font-size: 11px; 
-            font-weight: bold; 
-            z-index: 10; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2); 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-        }
+        .map-floating-header { position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.95); padding: 6px 14px; border-radius: 4px; font-size: 11px; font-weight: bold; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; }
 
         /* Row Grafik Bawah */
         .bottom-charts-row { display: grid; grid-template-columns: minmax(130px, 1.2fr) 3fr minmax(90px, 0.8fr); gap: 12px; height: 160px; }
@@ -144,20 +121,11 @@
 
         /* RESPONSIVE MEDIA QUERIES */
         @media (max-width: 1024px) {
-            .dashboard-container {
-                grid-template-columns: 1fr;
-            }
+            .dashboard-container { grid-template-columns: 1fr; }
         }
-
         @media (max-width: 600px) {
-            .bottom-charts-row {
-                grid-template-columns: 1fr;
-                height: auto;
-            }
-            .kpi-column {
-                flex-direction: row;
-                gap: 5px;
-            }
+            .bottom-charts-row { grid-template-columns: 1fr; height: auto; }
+            .kpi-column { flex-direction: row; gap: 5px; }
             .kpi-column div, .performa-box { flex: 1; }
         }
     </style>
@@ -207,7 +175,8 @@
                 </div>
                 
                 <a href="#" class="btn-document">Contract Document</a>
-                <div class="countdown-box">226 17:03:05</div>
+                
+                <div id="countdown" class="countdown-box">000 00:00:00</div>
             </div>
             
             <div class="card">
@@ -268,22 +237,22 @@
                 <div class="card-header">Overview Finansial</div>
                 
                 <div class="grid-data">
-                    <div><div class="grid-label">HB</div><div class="grid-value red-text">999 M</div></div>
-                    <div><div class="grid-label">HPP ARP</div><div class="grid-value">99 %</div></div>
-                    <div><div class="grid-label">Real Progress</div><div class="grid-value red-text">999 M</div></div>
-                    <div><div class="grid-label">HPP Real</div><div class="grid-value">99 %</div></div>
+                    <div><div class="grid-label">HB</div><div class="grid-value red-text">3,148.97 M</div></div>
+                    <div><div class="grid-label">HPP ARP</div><div class="grid-value">87.00 %</div></div>
+                    <div><div class="grid-label">Real Progress</div><div class="grid-value red-text">2,739.60 M</div></div>
+                    <div><div class="grid-label">HPP Real</div><div class="grid-value">87.00 %</div></div>
                 </div>
 
                 <div style="text-align:center; font-size:10px; margin-bottom:2px;">EAC %</div>
-                <div class="grid-value" style="text-align:center; margin-bottom:12px;">99 %</div>
+                <div class="grid-value" style="text-align:center; margin-bottom:12px;">87.00 %</div>
 
                 <div class="card-header" style="margin-top:5px;">Solvabilitas</div>
                 <div class="grid-data">
-                    <div><div class="grid-label">Cash In</div><div class="grid-value red-text">999 M</div></div>
-                    <div><div class="grid-label">Defisit / Surplus</div><div class="grid-value">999 M</div></div>
+                    <div><div class="grid-label">Cash In</div><div class="grid-value red-text">2382.48 M</div></div>
+                    <div><div class="grid-label">Defisit / Surplus</div><div class="grid-value">87.00 %</div></div>
                 </div>
 
-                <div class="card-header" style="margin-top:5px;">QHSSE</div>
+                <div class="card-header">QHSSE</div>
                 <div class="qhsse-row">
                     <div><div class="grid-label">NC</div><div class="qhsse-val">0</div></div>
                     <div><div class="grid-label">Nearmiss</div><div class="qhsse-val">0</div></div>
@@ -299,21 +268,65 @@
 
     <script src="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.js"></script>
     <script>
-        // Inisialisasi Peta 3D menggunakan data style Cartocdn Voyager-GL
+        // ENGINE PETA 3D
         const map = new maplibregl.Map({
             container: 'map',
             style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json', 
-            center: [116.6856, -1.1274], // Titik tengah Jembatan Pulau Balang, IKN Kalimantan Timur
-            zoom: 13.5, // Sedikit diperdekat agar perspektif 3D objek terasa lebih megah
-            pitch: 60,  // Sudut kamera miring 60 derajat untuk menghasilkan efek 3D kedalaman
-            bearing: 25, // Kamera sedikit diputar ke arah timur laut sesuai sudut pandang jalan tol
+            center: [116.6856, -1.1274], 
+            zoom: 13.5, 
+            pitch: 60,  
+            bearing: 25, 
             antialias: true
         });
 
-        // Event listener otomatis meresize render peta saat dimensi wadah berubah (Responsive)
         window.addEventListener('resize', () => {
             map.resize();
         });
+
+        // =========================================================================
+        // LOGIKA LIVE COUNTDOWN (226 HARI MENUJU 24:00)
+        // =========================================================================
+        function initCountdown() {
+            // Mengunci target waktu tepat 226 hari dari waktu sekarang ke pukul 24:00 (Tengah Malam)
+            const targetDate = new Date();
+            targetDate.setDate(targetDate.getDate() + 226);
+            targetDate.setHours(24, 0, 0, 0); // Di-set tepat ke jam 24:00
+
+            const countdownElement = document.getElementById('countdown');
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = targetDate.getTime() - now;
+
+                if (distance < 0) {
+                    countdownElement.innerHTML = "PROYEK SELESAI";
+                    clearInterval(intervalId);
+                    return;
+                }
+
+                // Perhitungan matematis pemecah milidetik ke Hari, Jam, Menit, dan Detik
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Format angka agar selalu memiliki awalan angka 0 jika satu digit (misal: "05" bukan "5")
+                const formattedDays = String(days).padStart(3, '0');
+                const formattedHours = String(hours).padStart(2, '0');
+                const formattedMinutes = String(minutes).padStart(2, '0');
+                const formattedSeconds = String(seconds).padStart(2, '0');
+
+                // Terapkan hasil string ke layout kotak UI
+                countdownElement.innerHTML = `${formattedDays} ${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+            }
+
+            // Jalankan fungsi sekali saat web dibuka, lalu ulangi otomatis setiap 1 detik (1000ms)
+            updateCountdown();
+            const intervalId = setInterval(updateCountdown, 1000);
+        }
+
+        // Panggil fungsi countdown saat seluruh halaman web selesai dimuat
+        window.onload = initCountdown;
     </script>
 </body>
 </html>
