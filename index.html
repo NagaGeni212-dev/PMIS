@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PMIS - Proyek Tol IKN (Perfect Fit Gmaps)</title>
+    <title>PMIS - Proyek Tol IKN (Hybrid Satellite Map)</title>
     <link href="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.css" rel="stylesheet" />
     
     <style>
@@ -87,32 +87,18 @@
         /* STYLE COUNTDOWN BOX */
         .countdown-box { background: #333; color: #FFC000; font-family: 'Courier New', Courier, monospace; font-size: 16px; text-align: center; padding: 8px; letter-spacing: 0.5px; font-weight: bold; border-radius: 4px; margin-top: auto; }
         
-        /* KOTAK CARD MINI-MAP: Menghilangkan padding internal card bawaan agar peta bisa menyentuh pinggir */
-        .card-mini-map {
-            padding: 0 !important;
-            overflow: hidden;
-            border: 1px solid #DDD;
-        }
-
-        /* PERBAIKAN UTAMA: SOLUSI GMAPS FULL FIT & RESPONSIVE */
-        .mini-map-container { 
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16 / 9; /* Mengunci rasio kotak peta */
-            overflow: hidden;
-            border-radius: 4px;
-        }
+        /* WADAH MINI-MAP UNTUK INTEGRASI BARU */
+        .mini-map-container { aspect-ratio: 16 / 9; background: #DDD; border-radius: 4px; overflow: hidden; position: relative; }
         
-        /* Teknik Object-Fit Reset untuk Iframe Map */
+        /* PERBAIKAN CSS UTAMA: GMAPS FULL DYNAMIC & FIT SESUAI REFERENSI */
         .mini-map-container iframe { 
             position: absolute;
             top: 0;
             left: 0;
-            width: 100% !important;
-            height: 100% !important;
-            border: 0;
-            object-fit: cover;
-            /* Mengeliminasi ruang kosong bawaan widget google */
+            width: 100% !important; /* Memaksa peta melebar 100% dari ruang card */
+            height: 100% !important; /* Memaksa peta meninggi 100% dari ruang card */
+            border: 0; 
+            /* Mengeliminasi padding bawaan widget google maps agar peta padat */
             margin: 0;
             padding: 0;
         }
@@ -206,9 +192,9 @@
                 <div id="countdown" class="countdown-box">000 Hari 00:00:00</div>
             </div>
             
-            <div class="card card-mini-map">
+            <div class="card">
                 <div class="mini-map-container">
-                    <<iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d10435.868863295584!2d116.71056975435465!3d-1.140230511783447!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1stol%20ikn%205b!5e1!3m2!1sid!2sid!4v1779181376216!5m2!1sid!2sid" width="200" height="100" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <iframe src="http://googleusercontent.com/maps.google.com/5" allowfullscreen="" loading="lazy"></iframe>
                 </div>
             </div>
             
@@ -300,7 +286,7 @@
         const map = new maplibregl.Map({
             container: 'map',
             style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json', 
-            center: [116.6856, -1.1274], 
+            center: [116.6856, -1.1274], // Jembatan Pulau Balang, IKN
             zoom: 13.5, 
             pitch: 60,  
             bearing: 25, 
