@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PMIS - Proyek Tol IKN (Active Countdown)</title>
+    <title>PMIS - Proyek Tol IKN (Updated Layout)</title>
     <link href="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.css" rel="stylesheet" />
     
     <style>
@@ -73,6 +73,11 @@
         .card { background: white; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 10px; box-sizing: border-box; display: flex; flex-direction: column; }
         .card-header { background: var(--primary-red); color: white; text-align: center; font-size: 11px; font-weight: bold; padding: 6px; margin: -10px -10px 10px -10px; border-top-left-radius: 4px; border-top-right-radius: 4px; }
         
+        /* MODIFIKASI KHUSUS CARD HEADER QHSSE (Margin Top 5px) */
+        .qhsse-header {
+            margin-top: 5px !important;
+        }
+        
         /* KOLOM KIRI (INFORMASI PROYEK) */
         .contract-table { width: 100%; font-size: 11px; border-collapse: collapse; text-align: center; margin-bottom: 10px; }
         .contract-table th { color: #666; font-weight: normal; padding-bottom: 5px; }
@@ -81,10 +86,13 @@
         .pm-name { color: var(--primary-red); font-weight: bold; font-size: 12px; }
         .btn-document { background: #0056b3; color: white; text-align: center; padding: 6px; font-size: 11px; font-weight: bold; border-radius: 3px; text-decoration: none; display: block; margin: 8px 0; }
         
-        /* STYLE COUNTDOWN BOX - Font monospace agar angka tidak bergeser saat berganti */
-        .countdown-box { background: #333; color: #FFC000; font-family: 'Courier New', Courier, monospace; font-size: 18px; text-align: center; padding: 8px; letter-spacing: 1px; font-weight: bold; border-radius: 4px; margin-top: auto; }
+        /* STYLE COUNTDOWN BOX */
+        .countdown-box { background: #333; color: #FFC000; font-family: 'Courier New', Courier, monospace; font-size: 16px; text-align: center; padding: 8px; letter-spacing: 0.5px; font-weight: bold; border-radius: 4px; margin-top: auto; }
         
-        .mini-map { aspect-ratio: 16 / 9; background: #DDD; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #666; }
+        /* WADAH MINI-MAP UNTUK EMBED GOOGLE MAPS */
+        .mini-map { aspect-ratio: 16 / 9; background: #DDD; border-radius: 4px; overflow: hidden; position: relative; }
+        .mini-map iframe { width: 100%; height: 100%; border: 0; }
+
         .weather-box { display: flex; justify-content: space-between; font-size: 11px; background: var(--dark-blue); color: white; padding: 8px; border-radius: 4px; text-align: center; }
 
         /* KOLOM TENGAH */
@@ -122,11 +130,6 @@
         /* RESPONSIVE MEDIA QUERIES */
         @media (max-width: 1024px) {
             .dashboard-container { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 600px) {
-            .bottom-charts-row { grid-template-columns: 1fr; height: auto; }
-            .kpi-column { flex-direction: row; gap: 5px; }
-            .kpi-column div, .performa-box { flex: 1; }
         }
     </style>
 </head>
@@ -176,11 +179,13 @@
                 
                 <a href="#" class="btn-document">Contract Document</a>
                 
-                <div id="countdown" class="countdown-box">000 00:00:00</div>
+                <div id="countdown" class="countdown-box">000 Hari 00:00:00</div>
             </div>
             
             <div class="card">
-                <div class="mini-map">Peta Lokasi (2D Maps)</div>
+                <div class="mini-map">
+                    <iframe src="https://maps.google.com/maps?q=-1.1274,116.6856&z=12&output=embed" allowfullscreen="" loading="lazy"></iframe>
+                </div>
             </div>
             
             <div class="weather-box">
@@ -252,7 +257,7 @@
                     <div><div class="grid-label">Defisit / Surplus</div><div class="grid-value">87.00 %</div></div>
                 </div>
 
-                <div class="card-header">QHSSE</div>
+                <div class="card-header qhsse-header">QHSSE</div>
                 <div class="qhsse-row">
                     <div><div class="grid-label">NC</div><div class="qhsse-val">0</div></div>
                     <div><div class="grid-label">Nearmiss</div><div class="qhsse-val">0</div></div>
@@ -268,7 +273,6 @@
 
     <script src="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.js"></script>
     <script>
-        // ENGINE PETA 3D
         const map = new maplibregl.Map({
             container: 'map',
             style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json', 
@@ -283,14 +287,11 @@
             map.resize();
         });
 
-        // =========================================================================
-        // LOGIKA LIVE COUNTDOWN (226 HARI MENUJU 24:00)
-        // =========================================================================
+        // LIVE COUNTDOWN WITH "Hari" TEXT
         function initCountdown() {
-            // Mengunci target waktu tepat 226 hari dari waktu sekarang ke pukul 24:00 (Tengah Malam)
             const targetDate = new Date();
             targetDate.setDate(targetDate.getDate() + 226);
-            targetDate.setHours(24, 0, 0, 0); // Di-set tepat ke jam 24:00
+            targetDate.setHours(24, 0, 0, 0); 
 
             const countdownElement = document.getElementById('countdown');
 
@@ -304,28 +305,24 @@
                     return;
                 }
 
-                // Perhitungan matematis pemecah milidetik ke Hari, Jam, Menit, dan Detik
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                // Format angka agar selalu memiliki awalan angka 0 jika satu digit (misal: "05" bukan "5")
                 const formattedDays = String(days).padStart(3, '0');
                 const formattedHours = String(hours).padStart(2, '0');
                 const formattedMinutes = String(minutes).padStart(2, '0');
                 const formattedSeconds = String(seconds).padStart(2, '0');
 
-                // Terapkan hasil string ke layout kotak UI
-                countdownElement.innerHTML = `${formattedDays} ${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+                // MODIFIKASI: Menambahkan string "Hari" setelah data angka hari
+                countdownElement.innerHTML = `${formattedDays} Hari ${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
             }
 
-            // Jalankan fungsi sekali saat web dibuka, lalu ulangi otomatis setiap 1 detik (1000ms)
             updateCountdown();
             const intervalId = setInterval(updateCountdown, 1000);
         }
 
-        // Panggil fungsi countdown saat seluruh halaman web selesai dimuat
         window.onload = initCountdown;
     </script>
 </body>
