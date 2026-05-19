@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PMIS - Proyek Tol IKN (Hybrid Satellite Map Secure)</title>
+    <title>PMIS - Proyek Tol IKN (Mini Map 3:4 Ratio)</title>
     <link href="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.css" rel="stylesheet" />
     
     <style>
@@ -87,23 +87,23 @@
         /* STYLE COUNTDOWN BOX */
         .countdown-box { background: #333; color: #FFC000; font-family: 'Courier New', Courier, monospace; font-size: 16px; text-align: center; padding: 8px; letter-spacing: 0.5px; font-weight: bold; border-radius: 4px; margin-top: auto; }
         
-        /* KOTAK CARD MINI-MAP: Tanpa padding agar peta bisa menyentuh pinggiran secara elegan */
+        /* KOTAK CARD MINI-MAP: Tanpa padding agar peta bisa menyentuh pinggiran */
         .card-mini-map {
             padding: 0 !important;
             overflow: hidden;
             border: 1px solid #DDD;
         }
 
-        /* WADAH RESPONSIF UNTUK GOOGLE MAPS */
+        /* UPDATE TERBARU: MENGUBAH RASIO WADAH MINI-MAP MENJADI 3/4 */
         .mini-map-container { 
             position: relative;
             width: 100%;
-            aspect-ratio: 16 / 9;
+            aspect-ratio: 3 / 4; /* Rasio diubah menjadi 3:4 vertikal agar memanjang ke bawah */
             overflow: hidden;
             border-radius: 4px;
         }
         
-        /* MEMAKSA IFRAME UNTUK FIT DAN PADAT TANPA JARAK SISA */
+        /* IFRAME MAP TETAP KUNCI FULL BLEED */
         .mini-map-container iframe { 
             position: absolute;
             top: 0;
@@ -200,9 +200,7 @@
                 </div>
                 
                 <a href="#" class="btn-document">Contract Document</a>
-                <div class="pm-box">
-                    <div>Sisa Waktu Pelaksanaan</div>
-                </div>
+                
                 <div id="countdown" class="countdown-box">000 Hari 00:00:00</div>
             </div>
             
