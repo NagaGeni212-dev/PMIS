@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PMIS - Proyek Tol IKN (Mini Map 3:4 Ratio)</title>
+    <title>PMIS - Proyek Tol IKN (Mini Map 4:3 Ratio & Title)</title>
     <link href="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.css" rel="stylesheet" />
     
     <style>
@@ -80,30 +80,33 @@
         .contract-table { width: 100%; font-size: 11px; border-collapse: collapse; text-align: center; margin-bottom: 10px; }
         .contract-table th { color: #666; font-weight: normal; padding-bottom: 5px; }
         .contract-table td { font-weight: bold; font-size: 12px; }
-        .pm-box { text-align: center; font-size: 11px; border-top: 1px solid #EEE; padding-top: 8px; }
+        .pm-box { text-align: center; font-size: 11px; border-top: 1px solid #EEE; padding-top: 8px; margin-bottom: 8px; }
         .pm-name { color: var(--primary-red); font-weight: bold; font-size: 12px; }
-        .btn-document { background: #0056b3; color: white; text-align: center; padding: 6px; font-size: 11px; font-weight: bold; border-radius: 3px; text-decoration: none; display: block; margin: 8px 0; }
+        .btn-document { background: #0056b3; color: white; text-align: center; padding: 6px; font-size: 11px; font-weight: bold; border-radius: 3px; text-decoration: none; display: block; margin: 4px 0 12px 0; }
+        
+        /* UPDATE: LABEL SISA WAKTU PEKERJAAN */
+        .countdown-title { text-align: center; font-size: 11px; font-weight: bold; color: #444; margin-top: auto; margin-bottom: 4px; }
         
         /* STYLE COUNTDOWN BOX */
-        .countdown-box { background: #333; color: #FFC000; font-family: 'Courier New', Courier, monospace; font-size: 16px; text-align: center; padding: 8px; letter-spacing: 0.5px; font-weight: bold; border-radius: 4px; margin-top: auto; }
+        .countdown-box { background: #333; color: #FFC000; font-family: 'Courier New', Courier, monospace; font-size: 16px; text-align: center; padding: 8px; letter-spacing: 0.5px; font-weight: bold; border-radius: 4px; }
         
-        /* KOTAK CARD MINI-MAP: Tanpa padding agar peta bisa menyentuh pinggiran */
+        /* KOTAK CARD MINI-MAP: Tanpa padding agar peta menyentuh pinggiran */
         .card-mini-map {
             padding: 0 !important;
             overflow: hidden;
             border: 1px solid #DDD;
         }
 
-        /* UPDATE TERBARU: MENGUBAH RASIO WADAH MINI-MAP MENJADI 3/4 */
+        /* UPDATE TERBARU: MENGUBAH RASIO WADAH MINI-MAP MENJADI 4/3 */
         .mini-map-container { 
             position: relative;
             width: 100%;
-            aspect-ratio: 3 / 4; /* Rasio diubah menjadi 3:4 vertikal agar memanjang ke bawah */
+            aspect-ratio: 4 / 3; /* Rasio diubah menjadi 4:3 lanskap standar */
             overflow: hidden;
             border-radius: 4px;
         }
         
-        /* IFRAME MAP TETAP KUNCI FULL BLEED */
+        /* IFRAME MAP FULL FIT */
         .mini-map-container iframe { 
             position: absolute;
             top: 0;
@@ -201,12 +204,13 @@
                 
                 <a href="#" class="btn-document">Contract Document</a>
                 
+                <div class="countdown-title">Sisa Waktu Pekerjaan</div>
                 <div id="countdown" class="countdown-box">000 Hari 00:00:00</div>
             </div>
             
             <div class="card card-mini-map">
                 <div class="mini-map-container">
-                    <iframe src="https://maps.google.com/maps?q=-1.1274,116.6856&z=13&t=h&output=embed" allowfullscreen="" loading="lazy"></iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d31915.22851410118!2d116.6856!3d-1.1274!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df146e5015b600d%3A0x6e2ef3f24bf7123!2sJembatan%20Pulau%20Balang!5e1!3m2!1sid!2sid!4v1716123456789!5m2!1sid!2sid&t=k" allowfullscreen="" loading="lazy"></iframe>
                 </div>
             </div>
             
