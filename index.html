@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PMIS - Proyek Tol IKN (Pure Dynamic Single Page)</title>
+    <title>PMIS - Proyek Tol IKN (Dynamic Scrolling Page)</title>
     <link href="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.css" rel="stylesheet" />
     
     <style>
@@ -14,170 +14,182 @@
             --card-gray: #E6E6E6;
         }
 
-        /* SISTEM BASE: MENYETEL LAYAR UTAMA AGAR FLEKSIBEL */
-        html, body {
+        /* MENGIZINKAN HALAMAN UNTUK SCROLL MEMANJANG KE BAWAH */
+        body {
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--light-bg);
             color: #333;
             box-sizing: border-box;
-            overflow: hidden; /* Hilangkan scrollbar utama browser */
-            display: flex;
-            flex-direction: column; /* Mengatur susunan Header, Nav, dan Container ke bawah */
+            overflow-x: hidden;
+            overflow-y: auto; /* Scroll utama aktif kembali */
         }
 
-        /* HEADER & SUB-NAV MENGGUNAKAN TINGGI STATIS */
+        /* HEADER UTAMA */
         header {
             background-color: var(--primary-red);
             color: white;
-            padding: 0 20px;
+            padding: 10px 20px;
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
             border-bottom: 3px solid #FFC000;
-            height: 45px;
-            min-height: 45px;
-            box-sizing: border-box;
+            gap: 10px;
         }
-        .header-left { display: flex; align-items: center; gap: 15px; }
-        .logo-placeholder { font-weight: bold; font-size: 18px; border: 2px solid white; padding: 2px 8px; }
-        .project-title h1 { margin: 0; font-size: 11px; letter-spacing: 0.5px; line-height: 1.2; }
-        .project-title h2 { margin: 1px 0 0 0; font-size: 9px; font-weight: normal; color: #DDD; }
-        .header-nav { display: flex; gap: 12px; font-size: 11px; }
+        .header-left { display: flex; align-items: center; gap: 15px; min-width: 300px; }
+        .logo-placeholder { font-weight: bold; font-size: 24px; border: 2px solid white; padding: 2px 10px; }
+        .project-title h1 { margin: 0; font-size: 13px; letter-spacing: 0.5px; }
+        .project-title h2 { margin: 3px 0 0 0; font-size: 11px; font-weight: normal; color: #DDD; }
+        
+        .header-nav { display: flex; gap: 15px; font-size: 11px; flex-wrap: wrap; }
         .header-nav a { color: white; text-decoration: none; font-weight: bold; }
 
+        /* SUB-NAVIGATION BAR */
         .sub-nav {
             background-color: white;
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-around;
-            align-items: center;
-            padding: 0 10px;
+            padding: 8px 10px;
             font-size: 11px;
             font-weight: 600;
             border-bottom: 1px solid #CCC;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            height: 30px;
-            min-height: 30px;
-            box-sizing: border-box;
+            gap: 8px;
         }
-        .sub-nav div { cursor: pointer; color: #555; }
+        .sub-nav div { cursor: pointer; color: #555; padding: 2px 5px; }
         .sub-nav div.active { color: black; border-bottom: 2px solid var(--primary-red); }
 
-        /* ARSITEKTUR GRID DASHBOARD DINAMIS (Kunci Utama Perbaikan) */
+        /* ARSITEKTUR LAYOUT GRID MENGGUNAKAN TINGGI OTOMATIS (AUTO-STRETCH) */
         .dashboard-container {
             display: grid;
-            /* Membagi kolom kiri dan kanan secara persentase dinamis (bukan piksel statis) */
-            grid-template-columns: 18% 64% 18%; 
-            gap: 8px;
-            padding: 8px;
-            flex: 1; /* Otomatis menghabiskan seluruh sisa tinggi layar monitor */
-            min-height: 0; /* WAJIB: Memotong batas minimum default agar flexbox bekerja dinamis */
+            grid-template-columns: minmax(240px, 1.2fr) minmax(400px, 4fr) minmax(260px, 1.3fr);
+            gap: 12px;
+            padding: 12px;
+            height: auto; /* Tinggi otomatis agar bisa memanjang ke bawah */
             box-sizing: border-box;
         }
 
-        /* STRUKTUR KOLOM OTOMATIS */
+        /* STRUKTUR KOLOM */
         .column { 
             display: flex; 
             flex-direction: column; 
-            gap: 8px; 
-            height: 100%; 
-            min-height: 0; /* Mengunci kolom agar tidak meluber ke bawah */
+            gap: 12px; 
         }
         
-        /* CARD STRUKTUR INTERNAL */
+        /* CARD KOMPONEN */
         .card { 
             background: white; 
             border-radius: 4px; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.08); 
-            padding: 8px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            padding: 10px; 
             box-sizing: border-box; 
             display: flex; 
-            flex-direction: column;
-            min-height: 0; /* Memaksa kartu beradaptasi secara dinamis saat layar mengecil */
+            flex-direction: column; 
         }
         
-        /* SCROLL INTERNAL RESPONSIVE */
-        .card-body-scroll {
-            flex: 1;
-            overflow-y: auto; 
-            min-height: 0;
-            padding-right: 2px;
-        }
-        
-        /* Kustomisasi scrollbar internal agar tipis dan elegan */
-        .card-body-scroll::-webkit-scrollbar { width: 4px; }
-        .card-body-scroll::-webkit-scrollbar-thumb { background: #CCC; border-radius: 2px; }
-
         .card-header { 
             background: var(--primary-red); 
             color: white; 
             text-align: center; 
             font-size: 11px; 
             font-weight: bold; 
-            padding: 4px; 
-            margin: -8px -8px 6px -8px; 
+            padding: 6px; 
+            margin: -10px -10px 10px -10px; 
             border-top-left-radius: 4px; 
             border-top-right-radius: 4px; 
         }
         
-        .qhsse-header { margin-top: 4px !important; }
-
-        /* DATA TABEL & FORMAT TEKS */
-        .contract-table { width: 100%; font-size: 10px; border-collapse: collapse; text-align: center; margin-bottom: 6px; }
-        .contract-table th { color: #666; font-weight: normal; padding-bottom: 2px; }
-        .contract-table td { font-weight: bold; font-size: 11px; }
-        .pm-box { text-align: center; font-size: 10px; border-top: 1px solid #EEE; padding-top: 4px; }
-        .pm-name { color: var(--primary-red); font-weight: bold; font-size: 11px; }
-        .btn-document { background: #0056b3; color: white; text-align: center; padding: 4px; font-size: 10px; font-weight: bold; border-radius: 3px; text-decoration: none; display: block; margin: 4px 0; }
+        /* CARD HEADER QHSSE (Margin Top 5px) */
+        .qhsse-header { margin-top: 5px !important; }
         
-        .countdown-title { text-align: center; font-size: 10px; font-weight: bold; color: #444; margin-top: auto; margin-bottom: 2px; }
-        .countdown-box { background: #333; color: #FFC000; font-family: 'Courier New', Courier, monospace; font-size: 14px; text-align: center; padding: 6px; letter-spacing: 0.5px; font-weight: bold; border-radius: 4px; }
+        /* KOLOM KIRI (INFORMASI PROYEK) */
+        .contract-table { width: 100%; font-size: 11px; border-collapse: collapse; text-align: center; margin-bottom: 10px; }
+        .contract-table th { color: #666; font-weight: normal; padding-bottom: 5px; }
+        .contract-table td { font-weight: bold; font-size: 12px; }
+        .pm-box { text-align: center; font-size: 11px; border-top: 1px solid #EEE; padding-top: 8px; margin-bottom: 8px; }
+        .pm-name { color: var(--primary-red); font-weight: bold; font-size: 12px; }
+        .btn-document { background: #0056b3; color: white; text-align: center; padding: 6px; font-size: 11px; font-weight: bold; border-radius: 3px; text-decoration: none; display: block; margin: 4px 0 12px 0; }
         
-        /* CARD MINI MAP PURE DYNAMIC FIT */
-        .card-mini-map { padding: 0 !important; overflow: hidden; border: 1px solid #DDD; flex: 1; }
-        .mini-map-container { position: relative; width: 100%; height: 100%; }
-        .mini-map-container iframe { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; border: 0; }
-
-        .weather-box { display: flex; justify-content: space-between; font-size: 9px; background: var(--dark-blue); color: white; padding: 6px; border-radius: 4px; text-align: center; }
-
-        /* KOLOM TENGAH: PETA UTAMA & GRAFIK MENGISI MAKSIMAL SISA RUANG */
-        .center-column { display: flex; flex-direction: column; gap: 8px; height: 100%; min-height: 0; }
-        .map-section { flex: 1; position: relative; border-radius: 4px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); background: #9cd3db; min-height: 0; }
-        #map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        .map-floating-header { position: absolute; top: 8px; left: 8px; background: rgba(255,255,255,0.95); padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: bold; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 6px; }
-
-        /* GRAFIK BAWAH DIATUR DENGAN PROPORSI TINGGI MAKSIMAL 25% DARI SISA RUANG */
-        .bottom-charts-row { 
-            display: grid; 
-            grid-template-columns: 20% 64% 16%; 
-            gap: 8px; 
-            height: 25%; /* Mengikuti sisa porsi ruang vertikal secara otomatis */
-            min-height: 110px; /* Batas aman terendah agar grafik tidak gepeng ekstrem */
+        /* LABEL & BOX COUNTDOWN */
+        .countdown-title { text-align: center; font-size: 11px; font-weight: bold; color: #444; margin-top: auto; margin-bottom: 4px; padding-top: 10px; }
+        .countdown-box { background: #333; color: #FFC000; font-family: 'Courier New', Courier, monospace; font-size: 16px; text-align: center; padding: 8px; letter-spacing: 0.5px; font-weight: bold; border-radius: 4px; }
+        
+        /* KOTAK CARD MINI-MAP: Rasio 4:3 Terkunci */
+        .card-mini-map {
+            padding: 0 !important;
+            overflow: hidden;
+            border: 1px solid #DDD;
         }
+        .mini-map-container { 
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3; /* Terkunci proporsional */
+            overflow: hidden;
+            border-radius: 4px;
+        }
+        .mini-map-container iframe { 
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            border: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .weather-box { display: flex; justify-content: space-between; font-size: 11px; background: var(--dark-blue); color: white; padding: 8px; border-radius: 4px; text-align: center; }
+
+        /* KOLOM TENGAH */
+        .center-column { display: flex; flex-direction: column; gap: 12px; }
+        
+        /* PETA UTAMA: Rasio 16:9 Terkunci */
+        .map-section { 
+            width: 100%;
+            aspect-ratio: 16 / 9; /* Terkunci proporsional */
+            position: relative; 
+            border-radius: 4px; 
+            overflow: hidden; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            background: #9cd3db; 
+        }
+        #map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .map-floating-header { position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.95); padding: 6px 14px; border-radius: 4px; font-size: 11px; font-weight: bold; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; }
+
+        /* Row Grafik Bawah */
+        .bottom-charts-row { display: grid; grid-template-columns: minmax(130px, 1.2fr) 3fr minmax(90px, 0.8fr); gap: 12px; height: 160px; }
         .progress-summary-card { background: var(--dark-blue); color: white; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .circle-progress { width: 50px; height: 50px; border-radius: 50%; background: conic-gradient(#00FF00 96%, #444 0); display: flex; justify-content: center; align-items: center; margin-bottom: 2px; font-weight: bold; font-size: 10px; }
-        .circle-inner { width: 40px; height: 40px; background: var(--dark-blue); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        
+        .circle-progress { width: 65px; height: 65px; border-radius: 50%; background: conic-gradient(#00FF00 96%, #444 0); display: flex; justify-content: center; align-items: center; margin-bottom: 5px; font-weight: bold; font-size: 12px; }
+        .circle-inner { width: 52px; height: 52px; background: var(--dark-blue); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
         
         .curve-s-card { background: var(--dark-blue); color: white; display: flex; flex-direction: column; justify-content: space-between; }
-        .dummy-chart { flex: 1; display: flex; align-items: flex-end; gap: 4px; padding-top: 4px; border-left: 1px solid white; border-bottom: 1px solid white; margin: 4px 8px; overflow: hidden; }
-        .bar { flex: 1; background: #00FFFF; min-width: 8px; }
+        .dummy-chart { flex: 1; display: flex; align-items: flex-end; gap: 6px; padding-top: 10px; border-left: 2px solid white; border-bottom: 2px solid white; margin: 5px 10px; }
+        .bar { flex: 1; background: #00FFFF; min-width: 15px; }
         
-        .kpi-column { display: flex; flex-direction: column; gap: 2px; font-size: 9px; font-weight: bold; text-align: center; color: white; justify-content: space-between; }
-        .kpi-tag { padding: 2px 0; border-radius: 2px; }
-        .performa-box { background: var(--dark-blue); padding: 2px 0; display: flex; flex-direction: column; justify-content: center; align-items: center; flex: 1; }
-        .warning-banner { background: #FFFF00; color: black; width: 100%; text-align: center; font-weight: bold; padding: 1px 0; }
+        .kpi-column { display: flex; flex-direction: column; gap: 4px; font-size: 9px; font-weight: bold; text-align: center; color: white; justify-content: space-between; }
+        .kpi-tag { padding: 3px 0; border-radius: 2px; }
+        .performa-box { background: var(--dark-blue); padding: 5px 0; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .warning-banner { background: #FFFF00; color: black; width: 100%; text-align: center; font-weight: bold; padding: 2px 0; }
 
         /* KOLOM KANAN */
-        .grid-data { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 10px; margin-bottom: 4px; text-align: center; }
-        .grid-label { color: #444; font-size: 9px; margin-bottom: 1px; }
-        .grid-value { background: var(--card-gray); font-weight: bold; padding: 4px; border-radius: 3px; font-size: 10px; }
+        .grid-data { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px; margin-bottom: 8px; text-align: center; }
+        .grid-label { color: #444; font-size: 10px; margin-bottom: 2px; }
+        .grid-value { background: var(--card-gray); font-weight: bold; padding: 5px; border-radius: 3px; font-size: 11px; }
         .grid-value.red-text { color: red; }
-        .qhsse-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; text-align: center; font-size: 10px; }
-        .qhsse-val { font-weight: bold; color: red; font-size: 12px; margin-top: 1px; }
-        .btn-action { background: var(--dark-blue); color: white; font-size: 10px; font-weight: bold; text-align: center; padding: 5px; border-radius: 4px; cursor: pointer; margin-top: 2px; }
+        .qhsse-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; text-align: center; font-size: 11px; }
+        .qhsse-val { font-weight: bold; color: red; font-size: 14px; margin-top: 4px; }
+        .btn-action { background: var(--dark-blue); color: white; font-size: 11px; font-weight: bold; text-align: center; padding: 8px; border-radius: 4px; cursor: pointer; margin-top: 4px; }
+
+        /* SIHIR RESPONSIVE: Saat layar ditarik kecil, melipat rapi ke bawah */
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr; /* Menjadi 1 kolom penuh vertikal */
+            }
+        }
     </style>
 </head>
 <body>
@@ -210,25 +222,27 @@
     <div class="dashboard-container">
         
         <div class="column">
-            <div class="card" style="flex: 1.2;">
+            <div class="card">
                 <div class="card-header">Project Information</div>
-                <div class="card-body-scroll">
-                    <div style="text-align: center; margin: 2px 0;"><strong style="color: #0056b3; font-size: 11px;">KEMENPU | HK</strong></div>
-                    <table class="contract-table">
-                        <tr><th>Contract Value</th><th>Contract Duration</th></tr>
-                        <tr><td>3.495 M</td><td>1130 Hari</td></tr>
-                    </table>
-                    <div class="pm-box">
-                        <div>Project Manager:</div>
-                        <div class="pm-name">Daryanto Aloysius</div>
-                    </div>
-                    <a href="#" class="btn-document">Contract Document</a>
+                <div style="text-align: center; margin: 10px 0;"><strong style="color: #0056b3;">KEMENPU | HK</strong></div>
+                
+                <table class="contract-table">
+                    <tr><th>Contract Value</th><th>Contract Duration</th></tr>
+                    <tr><td>3.495 M</td><td>1130 Hari</td></tr>
+                </table>
+                
+                <div class="pm-box">
+                    <div>Project Manager:</div>
+                    <div class="pm-name">Daryanto Aloysius</div>
                 </div>
+                
+                <a href="#" class="btn-document">Contract Document</a>
+                
                 <div class="countdown-title">Sisa Waktu Pekerjaan</div>
                 <div id="countdown" class="countdown-box">000 Hari 00:00:00</div>
             </div>
             
-            <div class="card card-mini-map" style="flex: 1;">
+            <div class="card card-mini-map">
                 <div class="mini-map-container">
                     <iframe src="https://maps.google.com/maps?q=-1.1274,116.6856&z=13&t=h&output=embed" allowfullscreen="" loading="lazy"></iframe>
                 </div>
@@ -253,11 +267,11 @@
 
             <div class="bottom-charts-row">
                 <div class="card progress-summary-card">
-                    <div style="font-size: 9px; margin-bottom: 2px;">Progress Summary<br>Mei 2026</div>
+                    <div style="font-size: 10px; margin-bottom: 5px;">Progress Summary<br>Mei 2026</div>
                     <div class="circle-progress">
                         <div class="circle-inner">96.11%</div>
                     </div>
-                    <div style="font-size: 8px; color: #AAA;">Plan: 92.35% | Dev: 3.75%</div>
+                    <div style="font-size: 8px; color: #AAA;">Plan: 92.358% | Dev: 3.752%</div>
                 </div>
 
                 <div class="card curve-s-card">
@@ -284,31 +298,30 @@
         </div>
 
         <div class="column">
-            <div class="card" style="flex: 1;">
+            <div class="card">
                 <div class="card-header">Overview Finansial</div>
-                <div class="card-body-scroll">
-                    <div class="grid-data">
-                        <div><div class="grid-label">HB</div><div class="grid-value red-text">3,148.97 M</div></div>
-                        <div><div class="grid-label">HPP ARP</div><div class="grid-value">87.00 %</div></div>
-                        <div><div class="grid-label">Real Progress</div><div class="grid-value red-text">2,739.60 M</div></div>
-                        <div><div class="grid-label">HPP Real</div><div class="grid-value">87.00 %</div></div>
-                    </div>
+                
+                <div class="grid-data">
+                    <div><div class="grid-label">HB</div><div class="grid-value red-text">3,148.97 M</div></div>
+                    <div><div class="grid-label">HPP ARP</div><div class="grid-value">87.00 %</div></div>
+                    <div><div class="grid-label">Real Progress</div><div class="grid-value red-text">2,739.60 M</div></div>
+                    <div><div class="grid-label">HPP Real</div><div class="grid-value">87.00 %</div></div>
+                </div>
 
-                    <div style="text-align:center; font-size:10px; margin-bottom:2px;">EAC %</div>
-                    <div class="grid-value" style="text-align:center; margin-bottom:6px;">87.00 %</div>
+                <div style="text-align:center; font-size:10px; margin-bottom:2px;">EAC %</div>
+                <div class="grid-value" style="text-align:center; margin-bottom:12px;">87.00 %</div>
 
-                    <div class="card-header" style="margin: 4px -8px 6px -8px;">Solvabilitas</div>
-                    <div class="grid-data">
-                        <div><div class="grid-label">Cash In</div><div class="grid-value red-text">2382.48 M</div></div>
-                        <div><div class="grid-label">Defisit / Surplus</div><div class="grid-value">87.00 %</div></div>
-                    </div>
+                <div class="card-header" style="margin-top:5px;">Solvabilitas</div>
+                <div class="grid-data">
+                    <div><div class="grid-label">Cash In</div><div class="grid-value red-text">2382.48 M</div></div>
+                    <div><div class="grid-label">Defisit / Surplus</div><div class="grid-value">87.00 %</div></div>
+                </div>
 
-                    <div class="card-header qhsse-header" style="margin: 4px -8px 6px -8px;">QHSSE</div>
-                    <div class="qhsse-row">
-                        <div><div class="grid-label">NC</div><div class="qhsse-val">0</div></div>
-                        <div><div class="grid-label">Nearmiss</div><div class="qhsse-val">0</div></div>
-                        <div><div class="grid-label">Fatality</div><div class="qhsse-val">0</div></div>
-                    </div>
+                <div class="card-header qhsse-header">QHSSE</div>
+                <div class="qhsse-row">
+                    <div><div class="grid-label">NC</div><div class="qhsse-val">0</div></div>
+                    <div><div class="grid-label">Nearmiss</div><div class="qhsse-val">0</div></div>
+                    <div><div class="grid-label">Fatality</div><div class="qhsse-val">0</div></div>
                 </div>
             </div>
 
@@ -330,7 +343,6 @@
             antialias: true
         });
 
-        // Memicu rendering ulang piksel engine peta secara real-time saat ukuran window ditarik
         window.addEventListener('resize', () => {
             map.resize();
         });
