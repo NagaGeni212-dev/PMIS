@@ -206,4 +206,114 @@
                     <div class="pm-name">Daryanto Aloysius</div>
                 </div>
                 
-                <a href="#" class="btn
+                <a href="#" class="btn-document">Contract Document</a>
+                <div class="countdown-box">226 17:03:05</div>
+            </div>
+            
+            <div class="card">
+                <div class="mini-map">Peta Lokasi (2D Maps)</div>
+            </div>
+            
+            <div class="weather-box">
+                <div><strong>Sel</strong><br>30°C</div>
+                <div><strong>Rab</strong><br>30°C</div>
+                <div><strong>Kam</strong><br>32°C</div>
+                <div><strong>Jum</strong><br>31°C</div>
+            </div>
+        </div>
+
+        <div class="center-column">
+            <div class="map-section">
+                <div class="map-floating-header">
+                    <span style="color:#e60000; font-weight:bold;">⬤ 3D MAP VIEW</span>
+                    <span>CARTO-GL VOYAGER</span>
+                </div>
+                <div id="map"></div>
+            </div>
+
+            <div class="bottom-charts-row">
+                <div class="card progress-summary-card">
+                    <div style="font-size: 10px; margin-bottom: 5px;">Progress Summary<br>Mei 2026</div>
+                    <div class="circle-progress">
+                        <div class="circle-inner">96.11%</div>
+                    </div>
+                    <div style="font-size: 8px; color: #AAA;">Plan: 92.358% | Dev: 3.752%</div>
+                </div>
+
+                <div class="card curve-s-card">
+                    <div class="card-header" style="background:none; text-align:left; margin:0; padding:0;">KURVA S</div>
+                    <div class="dummy-chart">
+                        <div class="bar" style="height: 20%;"></div>
+                        <div class="bar" style="height: 40%;"></div>
+                        <div class="bar" style="height: 65%;"></div>
+                        <div class="bar" style="height: 85%;"></div>
+                        <div class="bar" style="height: 96%;"></div>
+                    </div>
+                </div>
+
+                <div class="kpi-column">
+                    <div class="kpi-tag" style="background:green;">SPI<br>1.02</div>
+                    <div class="kpi-tag" style="background:red;">EPI<br>0.95</div>
+                    <div class="kpi-tag" style="background:green;">CPI<br>1.10</div>
+                    <div class="performa-box">
+                        <div>PERFORMA</div>
+                        <div class="warning-banner">WARNING</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="card" style="flex: 1;">
+                <div class="card-header">Overview Finansial</div>
+                
+                <div class="grid-data">
+                    <div><div class="grid-label">HB</div><div class="grid-value red-text">3,148.97 M</div></div>
+                    <div><div class="grid-label">HPP ARP</div><div class="grid-value">87.00 %</div></div>
+                    <div><div class="grid-label">Real Progress</div><div class="grid-value red-text">2,739.60 M</div></div>
+                    <div><div class="grid-label">HPP Real</div><div class="grid-value">87.00 %</div></div>
+                </div>
+
+                <div style="text-align:center; font-size:10px; margin-bottom:2px;">EAC %</div>
+                <div class="grid-value" style="text-align:center; margin-bottom:12px;">87.00 %</div>
+
+                <div class="card-header" style="margin-top:5px;">Solvabilitas</div>
+                <div class="grid-data">
+                    <div><div class="grid-label">Cash In</div><div class="grid-value red-text">2382.48 M</div></div>
+                    <div><div class="grid-label">Defisit / Surplus</div><div class="grid-value">87.00 %</div></div>
+                </div>
+
+                <div class="card-header">QHSSE</div>
+                <div class="qhsse-row">
+                    <div><div class="grid-label">NC</div><div class="qhsse-val">0</div></div>
+                    <div><div class="grid-label">Nearmiss</div><div class="qhsse-val">0</div></div>
+                    <div><div class="grid-label">Fatality</div><div class="qhsse-val">0</div></div>
+                </div>
+            </div>
+
+            <div class="btn-action">Issue Log & Action Plan</div>
+            <div class="btn-action">3 Top Risk</div>
+        </div>
+
+    </div>
+
+    <script src="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.js"></script>
+    <script>
+        // Inisialisasi Peta 3D menggunakan data style Cartocdn Voyager-GL
+        const map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json', 
+            center: [116.6856, -1.1274], // Titik tengah Jembatan Pulau Balang, IKN Kalimantan Timur
+            zoom: 13.5, // Sedikit diperdekat agar perspektif 3D objek terasa lebih megah
+            pitch: 60,  // Sudut kamera miring 60 derajat untuk menghasilkan efek 3D kedalaman
+            bearing: 25, // Kamera sedikit diputar ke arah timur laut sesuai sudut pandang jalan tol
+            antialias: true
+        });
+
+        // Event listener otomatis meresize render peta saat dimensi wadah berubah (Responsive)
+        window.addEventListener('resize', () => {
+            map.resize();
+        });
+    </script>
+</body>
+</html>
