@@ -1,154 +1,266 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="utf-8" />
-    <title>3D Map & BIM Viewer</title>
-    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    
-    <!-- Import CSS Maplibre untuk layout peta -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PMIS - Proyek Tol IKN (Fixed Aspect Ratio)</title>
     <link href="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.css" rel="stylesheet" />
     
     <style>
-        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
-        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
-        
-        /* Desain UI Panel Samping */
-        .sidebar {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            z-index: 1;
-            max-width: 300px;
+        :root {
+            --primary-red: #8B0000;
+            --dark-blue: #002060;
+            --light-bg: #F2F2F2;
+            --card-gray: #E6E6E6;
         }
-        h3 { margin-top: 0; color: #333; }
-        .info-box { font-size: 14px; color: #666; line-height: 1.4; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: #333;
+            box-sizing: border-box;
+        }
+
+        /* HEADER UTAMA */
+        header {
+            background-color: var(--primary-red);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #FFC000;
+            gap: 10px;
+        }
+        .header-left { display: flex; align-items: center; gap: 15px; min-width: 300px; }
+        .logo-placeholder { font-weight: bold; font-size: 24px; border: 2px solid white; padding: 2px 10px; }
+        .project-title h1 { margin: 0; font-size: 13px; letter-spacing: 0.5px; }
+        .project-title h2 { margin: 3px 0 0 0; font-size: 11px; font-weight: normal; color: #DDD; }
+        
+        .header-nav { display: flex; gap: 15px; font-size: 11px; flex-wrap: wrap; }
+        .header-nav a { color: white; text-decoration: none; font-weight: bold; }
+
+        /* SUB-NAVIGATION BAR */
+        .sub-nav {
+            background-color: white;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 8px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            border-bottom: 1px solid #CCC;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            gap: 8px;
+        }
+        .sub-nav div { cursor: pointer; color: #555; padding: 2px 5px; }
+        .sub-nav div.active { color: black; border-bottom: 2px solid var(--primary-red); }
+
+        /* DYNAMIC DASHBOARD LAYOUT */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: minmax(240px, 1.2fr) minmax(400px, 4fr) minmax(260px, 1.3fr);
+            gap: 12px;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+        /* Komponen Umum Kolom & Card */
+        .column { display: flex; flex-direction: column; gap: 12px; }
+        .card { background: white; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 10px; box-sizing: border-box; display: flex; flex-direction: column; }
+        .card-header { background: var(--primary-red); color: white; text-align: center; font-size: 11px; font-weight: bold; padding: 6px; margin: -10px -10px 10px -10px; border-top-left-radius: 4px; border-top-right-radius: 4px; }
+        
+        /* KOLOM KIRI (INFORMASI PROYEK) */
+        .contract-table { width: 100%; font-size: 11px; border-collapse: collapse; text-align: center; margin-bottom: 10px; }
+        .contract-table th { color: #666; font-weight: normal; padding-bottom: 5px; }
+        .contract-table td { font-weight: bold; font-size: 12px; }
+        .pm-box { text-align: center; font-size: 11px; border-top: 1px solid #EEE; padding-top: 8px; }
+        .pm-name { color: var(--primary-red); font-weight: bold; font-size: 12px; }
+        .btn-document { background: #0056b3; color: white; text-align: center; padding: 6px; font-size: 11px; font-weight: bold; border-radius: 3px; text-decoration: none; display: block; margin: 8px 0; }
+        .countdown-box { background: #333; color: #FFC000; font-family: monospace; font-size: 20px; text-align: center; padding: 8px; letter-spacing: 2px; font-weight: bold; border-radius: 4px; margin-top: auto; }
+        
+        .mini-map { aspect-ratio: 16 / 9; background: #DDD; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #666; }
+        .weather-box { display: flex; justify-content: space-between; font-size: 11px; background: var(--dark-blue); color: white; padding: 8px; border-radius: 4px; text-align: center; }
+
+        /* KOLOM TENGAH */
+        .center-column { display: flex; flex-direction: column; gap: 12px; }
+        
+        /* PETA UTAMA: MEMPERTAHANKAN RASIO PANJANG & LEBAR 16:9 */
+        .map-section { 
+            width: 100%;
+            aspect-ratio: 16 / 9; /* Ini mengunci perbandingan panjang dan lebar peta */
+            position: relative; 
+            border-radius: 4px; 
+            overflow: hidden; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            background: #9cd3db; 
+        }
+        #map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        
+        .map-floating-header { position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.9); padding: 5px 12px; border-radius: 4px; font-size: 11px; font-weight: bold; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; }
+
+        /* Row Grafik Bawah */
+        .bottom-charts-row { display: grid; grid-template-columns: minmax(130px, 1.2fr) 3fr minmax(90px, 0.8fr); gap: 12px; height: 160px; }
+        .progress-summary-card { background: var(--dark-blue); color: white; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        
+        .circle-progress { width: 65px; height: 65px; border-radius: 50%; background: conic-gradient(#00FF00 96%, #444 0); display: flex; justify-content: center; align-items: center; margin-bottom: 5px; font-weight: bold; font-size: 12px; }
+        .circle-inner { width: 52px; height: 52px; background: var(--dark-blue); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        
+        .curve-s-card { background: var(--dark-blue); color: white; display: flex; flex-direction: column; justify-content: space-between; }
+        .dummy-chart { flex: 1; display: flex; align-items: flex-end; gap: 6px; padding-top: 10px; border-left: 2px solid white; border-bottom: 2px solid white; margin: 5px 10px; }
+        .bar { flex: 1; background: #00FFFF; min-width: 15px; }
+        
+        .kpi-column { display: flex; flex-direction: column; gap: 4px; font-size: 9px; font-weight: bold; text-align: center; color: white; justify-content: space-between; }
+        .kpi-tag { padding: 3px 0; border-radius: 2px; }
+        .performa-box { background: var(--dark-blue); padding: 5px 0; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .warning-banner { background: #FFFF00; color: black; width: 100%; text-align: center; font-weight: bold; padding: 2px 0; }
+
+        /* KOLOM KANAN */
+        .grid-data { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px; margin-bottom: 8px; text-align: center; }
+        .grid-label { color: #444; font-size: 10px; margin-bottom: 2px; }
+        .grid-value { background: var(--card-gray); font-weight: bold; padding: 5px; border-radius: 3px; font-size: 11px; }
+        .grid-value.red-text { color: red; }
+        .qhsse-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; text-align: center; font-size: 11px; }
+        .qhsse-val { font-weight: bold; color: red; font-size: 14px; margin-top: 4px; }
+        .btn-action { background: var(--dark-blue); color: white; font-size: 11px; font-weight: bold; text-align: center; padding: 8px; border-radius: 4px; cursor: pointer; margin-top: 4px; }
+
+        /* RESPONSIVE MEDIA QUERIES */
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .bottom-charts-row {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            .kpi-column {
+                flex-direction: row;
+                gap: 5px;
+            }
+            .kpi-column div, .performa-box { flex: 1; }
+        }
     </style>
 </head>
 <body>
 
-<!-- Panel Informasi -->
-<div class="sidebar">
-    <h3>BIM 3D Map Viewer</h3>
-    <div class="info-box">
-        <p><strong>Status:</strong> Peta 3D Berhasil Dimuat</p>
-        <p>Gunakan <strong>Klik Kanan + Tarik</strong> untuk memutar sudut pandang kamera (Pitch & Bearing).</p>
+    <header>
+        <div class="header-left">
+            <div class="logo-placeholder">HK</div>
+            <div class="project-title">
+                <h1>PROJECT MANAGEMENT INFORMATION SYSTEM</h1>
+                <h2>PROYEK TOL IKN SEGMEN JEMBATAN P. BALANG - SP. RIKO SEKSI 5B</h2>
+            </div>
+        </div>
+        <div class="header-nav">
+            <a href="#">Lean Management</a>
+            <a href="#">Financial Dashboard</a>
+            <a href="#">Risk Management</a>
+            <a href="#">BIM 360</a>
+        </div>
+    </header>
+
+    <div class="sub-nav">
+        <div class="active">Home</div>
+        <div>Progress Monitoring</div>
+        <div>Progress Visualization</div>
+        <div>CCTV</div>
+        <div>Organization Chart</div>
+        <div>Project Data</div>
     </div>
-</div>
 
-<!-- Container Tempat Peta Muncul -->
-<div id="map"></div>
+    <div class="dashboard-container">
+        
+        <div class="column">
+            <div class="card" style="flex: 1;">
+                <div class="card-header">Project Information</div>
+                <div style="text-align: center; margin: 10px 0;"><strong style="color: #0056b3;">KEMENPU | HK</strong></div>
+                
+                <table class="contract-table">
+                    <tr><th>Contract Value</th><th>Contract Duration</th></tr>
+                    <tr><td>3.495 M</td><td>1130 Hari</td></tr>
+                </table>
+                
+                <div class="pm-box">
+                    <div>Project Manager:</div>
+                    <div class="pm-name">Daryanto Aloysius</div>
+                </div>
+                
+                <a href="#" class="btn-document">Contract Document</a>
+                <div class="countdown-box">226 17:03:05</div>
+            </div>
+            
+            <div class="card">
+                <div class="mini-map">Peta Lokasi (2D Maps)</div>
+            </div>
+            
+            <div class="weather-box">
+                <div><strong>Sel</strong><br>30°C</div>
+                <div><strong>Rab</strong><br>30°C</div>
+                <div><strong>Kam</strong><br>32°C</div>
+                <div><strong>Jum</strong><br>31°C</div>
+            </div>
+        </div>
 
-<!-- Import Library JavaScript Utama -->
-<script src="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+        <div class="center-column">
+            <div class="map-section">
+                <div class="map-floating-header">
+                    <span style="color:#0056b3; font-weight:bold;">⬤ Scene Viewer</span>
+                    <span>FOTOGRAMETRI JT IKN 5B</span>
+                </div>
+                <div id="map"></div>
+            </div>
 
-<script>
-    // 1. TENTUKAN KOORDINAT (Tempat model 3D Anda akan diletakkan di bumi)
-    // Contoh di bawah menggunakan koordinat Monas, Jakarta
-    const modelOrigin = [106.8271, -6.1754]; 
-    const modelAltitude = 0;
-    const modelRotate = [Math.PI / 2, 0, 0];
+            <div class="bottom-charts-row">
+                <div class="card progress-summary-card">
+                    <div style="font-size: 10px; margin-bottom: 5px;">Progress Summary<br>Mei 2026</div>
+                    <div class="circle-progress">
+                        <div class="circle-inner">96.11%</div>
+                    </div>
+                    <div style="font-size: 8px; color: #AAA;">Plan: 92.358% | Dev: 3.752%</div>
+                </div>
 
-    const modelAsMercator = maplibregl.MercatorCoordinate.fromLngLat(modelOrigin, modelAltitude);
+                <div class="card curve-s-card">
+                    <div class="card-header" style="background:none; text-align:left; margin:0; padding:0;">KURVA S</div>
+                    <div class="dummy-chart">
+                        <div class="bar" style="height: 20%;"></div>
+                        <div class="bar" style="height: 40%;"></div>
+                        <div class="bar" style="height: 65%;"></div>
+                        <div class="bar" style="height: 85%;"></div>
+                        <div class="bar" style="height: 96%;"></div>
+                    </div>
+                </div>
 
-    // Transformasi matematika agar Three.js sinkron dengan koordinat Peta
-    const modelTransform = {
-        translateX: modelAsMercator.x,
-        translateY: modelAsMercator.y,
-        translateZ: modelAsMercator.z,
-        rotateX: modelRotate[0],
-        rotateY: modelRotate[1],
-        rotateZ: modelRotate[2],
-        scale: modelAsMercator.meterInMercatorCoordinateUnits()
-    };
+                <div class="kpi-column">
+                    <div class="kpi-tag" style="background:green;">SPI<br>1.02</div>
+                    <div class="kpi-tag" style="background:red;">EPI<br>0.95</div>
+                    <div class="kpi-tag" style="background:green;">CPI<br>1.10</div>
+                    <div class="performa-box">
+                        <div>PERFORMA</div>
+                        <div class="warning-banner">WARNING</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    // 2. INISIALISASI PETA 3D
-    const map = new maplibregl.Map({
-        container: 'map',
-        style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json', // Menggunakan style default maplibre
-        center: modelOrigin,
-        zoom: 17,
-        pitch: 60, // Memiringkan kamera agar efek 3D terlihat nyata
-        bearing: -20
-    });
+        <div class="column">
+            <div class="card" style="flex: 1;">
+                <div class="card-header">Overview Finansial</div>
+                
+                <div class="grid-data">
+                    <div><div class="grid-label">HB</div><div class="grid-value red-text">3,148.97 M</div></div>
+                    <div><div class="grid-label">HPP ARP</div><div class="grid-value">87.00 %</div></div>
+                    <div><div class="grid-label">Real Progress</div><div class="grid-value red-text">2,739.60 M</div></div>
+                    <div><div class="grid-label">HPP Real</div><div class="grid-value">87.00 %</div></div>
+                </div>
 
-    // 3. MEMBUAT CUSTOM LAYER UNTUK MENAMPILKAN MODEL 3D
-    const customLayer = {
-        id: '3d-model-layer',
-        type: 'custom',
-        renderingMode: '3d',
-        onAdd: function (map, gl) {
-            this.camera = new THREE.Camera();
-            this.scene = new THREE.Scene();
+                <div style="text-align:center; font-size:10px; margin-bottom:2px;">EAC %</div>
+                <div class="grid-value" style="text-align:center; margin-bottom:12px;">87.00 %</div>
 
-            // Menambahkan Pencahayaan (Lighting) agar model terlihat terang
-            const directionalLight = new THREE.DirectionalLight(0xffffff);
-            directionalLight.position.set(0, -70, 100).normalize();
-            this.scene.add(directionalLight);
-
-            const ambientLight = new THREE.AmbientLight(0x404040, 2);
-            this.scene.add(ambientLight);
-
-            // MEMANGGIL MODEL 3D (File IFC Anda yang sudah di-convert ke .glb/.gltf)
-            const loader = new THREE.GLTFLoader();
-            // Ganti 'model_bangunan.glb' dengan URL atau path file model 3D Anda
-            loader.load('model_bangunan.glb', (gltf) => {
-                this.scene.add(gltf.scene);
-            }, 
-            (xhr) => {
-                console.log((xhr.loaded / xhr.total * 100) + '% terload');
-            },
-            (error) => {
-                console.error('Terjadi kesalahan saat memuat model:', error);
-            });
-
-            this.map = map;
-            this.renderer = new THREE.WebGLRenderer({
-                canvas: map.getCanvas(),
-                context: gl,
-                antialias: true
-            });
-            this.renderer.autoClear = false;
-        },
-        render: function (gl, matrix) {
-            const rotationX = new THREE.Matrix4().makeRotationX(modelTransform.rotateX);
-            const rotationY = new THREE.Matrix4().makeRotationY(modelTransform.rotateY);
-            const rotationZ = new THREE.Matrix4().makeRotationZ(modelTransform.rotateZ);
-
-            const m = new THREE.Matrix4().fromArray(matrix);
-            const l = new THREE.Matrix4()
-                .makeTranslation(
-                    modelTransform.translateX,
-                    modelTransform.translateY,
-                    modelTransform.translateZ
-                )
-                .scale(
-                    new THREE.Vector3(
-                        modelTransform.scale,
-                        -modelTransform.scale,
-                        modelTransform.scale
-                    )
-                )
-                .multiply(rotationX)
-                .multiply(rotationY)
-                .multiply(rotationZ);
-
-            this.camera.projectionMatrix = m.multiply(l);
-            this.renderer.resetState();
-            this.renderer.render(this.scene, this.camera);
-            this.map.triggerRepaint();
-        }
-    };
-
-    // 4. JALANKAN LAYER DI ATAS PETA SAAT PETA SELESAI DI-LOAD
-    map.on('style.load', () => {
-        map.addLayer(customLayer);
-    });
-</script>
-</body>
-</html>
+                <div class="card-header" style="margin-top:5px;">Solvabilitas</div>
+                <div class="grid-data
