@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PMIS - Proyek Tol IKN (Updated Layout)</title>
+    <title>PMIS - Proyek Tol IKN (Full Dynamic Gmaps)</title>
     <link href="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.css" rel="stylesheet" />
     
     <style>
@@ -74,9 +74,7 @@
         .card-header { background: var(--primary-red); color: white; text-align: center; font-size: 11px; font-weight: bold; padding: 6px; margin: -10px -10px 10px -10px; border-top-left-radius: 4px; border-top-right-radius: 4px; }
         
         /* MODIFIKASI KHUSUS CARD HEADER QHSSE (Margin Top 5px) */
-        .qhsse-header {
-            margin-top: 5px !important;
-        }
+        .qhsse-header { margin-top: 5px !important; }
         
         /* KOLOM KIRI (INFORMASI PROYEK) */
         .contract-table { width: 100%; font-size: 11px; border-collapse: collapse; text-align: center; margin-bottom: 10px; }
@@ -89,9 +87,23 @@
         /* STYLE COUNTDOWN BOX */
         .countdown-box { background: #333; color: #FFC000; font-family: 'Courier New', Courier, monospace; font-size: 16px; text-align: center; padding: 8px; letter-spacing: 0.5px; font-weight: bold; border-radius: 4px; margin-top: auto; }
         
-        /* WADAH MINI-MAP UNTUK EMBED GOOGLE MAPS */
-        .mini-map { aspect-ratio: 16 / 9; background: #DDD; border-radius: 4px; overflow: hidden; position: relative; }
-        .mini-map iframe { width: 100%; height: 100%; border: 0; }
+        /* TRICK CSS: GMAPS FULL DYNAMIC & FIT */
+        .mini-map { 
+            width: 100%;
+            aspect-ratio: 16 / 9; /* Mengunci rasio kotak peta */
+            background: #DDD; 
+            border-radius: 4px; 
+            overflow: hidden; 
+            position: relative; /* Wajib relative agar isi child bisa disetel absolut */
+        }
+        .mini-map iframe { 
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100% !important;  /* Memaksa peta melebar 100% dari ruang card */
+            height: 100% !important; /* Memaksa peta meninggi 100% dari ruang card */
+            border: 0; 
+        }
 
         .weather-box { display: flex; justify-content: space-between; font-size: 11px; background: var(--dark-blue); color: white; padding: 8px; border-radius: 4px; text-align: center; }
 
@@ -184,7 +196,7 @@
             
             <div class="card">
                 <div class="mini-map">
-                    <iframe src="https://maps.google.com/maps?q=-1.1274,116.6856&z=12&output=embed" allowfullscreen="" loading="lazy"></iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15954.912389947672!2d116.67499999999998!3d-1.1250000000000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df1175555555555%3A0x6b00000000000000!2sJembatan%20Pulau%20Balang!5e0!3m2!1sid!2sid!4v1710000000000!5m2!1sid!2sid" allowfullscreen="" loading="lazy"></iframe>
                 </div>
             </div>
             
@@ -287,7 +299,7 @@
             map.resize();
         });
 
-        // LIVE COUNTDOWN WITH "Hari" TEXT
+        // LIVE COUNTDOWN
         function initCountdown() {
             const targetDate = new Date();
             targetDate.setDate(targetDate.getDate() + 226);
@@ -315,7 +327,6 @@
                 const formattedMinutes = String(minutes).padStart(2, '0');
                 const formattedSeconds = String(seconds).padStart(2, '0');
 
-                // MODIFIKASI: Menambahkan string "Hari" setelah data angka hari
                 countdownElement.innerHTML = `${formattedDays} Hari ${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
             }
 
