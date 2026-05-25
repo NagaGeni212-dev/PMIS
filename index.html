@@ -343,7 +343,23 @@
 
     <script src="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.js"></script>
     <script>
-    
+        // ===== DEBUG UTILITIES =====
+        const DEBUG = true;
+        const debugPanel = document.getElementById('debugPanel');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const icon = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warn' ? '⚠️' : '📝';
+            const logEntry = `[${timestamp}] ${icon} ${message}`;
+            console.log(logEntry);
+            
+            if (DEBUG) {
+                debugPanel.classList.add('show');
+                debugPanel.innerHTML += logEntry + '<br>';
+                debugPanel.scrollTop = debugPanel.scrollHeight;
+            }
+        }
+
         // ===== CONFIGURATION =====
         const CONFIG = {
             APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbywJaArOqUh7hgEy4huCrGbg8Jtc7jiqVI5geR4COC09GjsI6-xxGHvXcy5tr_rNjGv/exec',
