@@ -445,7 +445,6 @@
                 if(row['A'+i] !== undefined && String(row['A'+i]).trim() !== '') maxIndex = Math.max(maxIndex, i);
             }
 
-            // PERINGATAN: Kolom benar-benar terputus dari Backend!
             if (maxIndex === 0 && isLive) {
                 log('❌ Kurva S: P1 s/d P60 dan A1 s/d A60 KOSONG/TIDAK ADA!', 'error');
                 sCurveChart.data.labels = ['Periksa Apps Script Anda'];
@@ -537,7 +536,6 @@
 
                 if (isLive) {
                     log(`Data diterima. Jumlah kolom: ${Object.keys(row).length}`, 'info');
-                    console.log("DAFTAR KOLOM TERBACA DARI SPREADSHEET:", Object.keys(row));
                 }
 
                 // Dynamic Date
@@ -600,14 +598,15 @@
                 if (row['CITYNAME'] || row['KOTA']) updateWeather(row['CITYNAME'] || row['KOTA']);
                 if (row['TARGETFINISH']) initCountdown(row['TARGETFINISH']);
                 
-                // GMaps Update
+                // GMaps Update (Centered exactly on Lat/Long from Spreadsheet)
                 let lat = row['LAT'] || row['LATITUDE'];
                 let long = row['LONG'] || row['LONGITUDE'];
+                
                 if (lat !== undefined && long !== undefined) {
                     const gIframe = document.getElementById('val-gmaps');
                     if (gIframe) {
-                        gIframe.src = `https://maps.google.com/maps?q=$${lat},${long}&z=14&output=embed`;
-                        log(`✅ GMaps diupdate ke Lat: ${lat}, Long: ${long}`, 'success');
+                        gIframe.src = `https://maps.google.com/maps?q=${lat},${long}&z=14&output=embed`;
+                        console.log(`✅ GMaps diupdate ke Lat: ${lat}, Long: ${long}`);
                     }
                 }
             } catch (error) { log(`Dashboard error: ${error.message}`, 'error'); }
