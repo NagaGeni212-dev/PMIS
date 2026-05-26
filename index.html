@@ -175,25 +175,6 @@
         .loading { color: #666; font-style: italic; }
         .error { color: red; font-weight: bold; }
 
-        .debug-panel {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.85);
-            color: #0f0;
-            padding: 10px;
-            border-radius: 4px;
-            font-size: 10px;
-            max-width: 350px;
-            max-height: 200px;
-            overflow-y: auto;
-            font-family: monospace;
-            z-index: 1000;
-            display: none;
-            border: 1px solid #0f0;
-        }
-        .debug-panel.show { display: block; }
-
         @media (max-width: 1024px) {
             .dashboard-container { grid-template-columns: 1fr; }
         }
@@ -332,34 +313,14 @@
 
     </div>
 
-    <div class="debug-panel" id="debugPanel">
-        <div style="font-weight:bold; border-bottom:1px solid #0f0; margin-bottom:5px;">DIAGNOSTIC PANEL</div>
-    </div>
-
     <script src="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <script>
-        // ===== DEBUG UTILITIES =====
-        const DEBUG = true;
-        const debugPanel = document.getElementById('debugPanel');
-        
+        // ===== UTILITIES =====
         function log(message, type = 'info') {
             const timestamp = new Date().toLocaleTimeString();
-            let icon = '📝';
-            let color = '#0f0';
-            if(type === 'error') { icon = '❌'; color = '#f55'; }
-            else if(type === 'warn') { icon = '⚠️'; color = '#fd0'; }
-            else if(type === 'success') { icon = '✅'; color = '#0f0'; }
-            
-            const logEntry = `<div style="color:${color}; margin-bottom:3px;">[${timestamp}] ${icon} ${message}</div>`;
             console.log(`[${timestamp}] ${type.toUpperCase()}: ${message}`);
-            
-            if (DEBUG) {
-                debugPanel.classList.add('show');
-                debugPanel.innerHTML += logEntry;
-                debugPanel.scrollTop = debugPanel.scrollHeight;
-            }
         }
 
         // ===== CONFIGURATION =====
@@ -639,13 +600,13 @@
                 if (row['CITYNAME'] || row['KOTA']) updateWeather(row['CITYNAME'] || row['KOTA']);
                 if (row['TARGETFINISH']) initCountdown(row['TARGETFINISH']);
                 
-                // GMaps Update (Link diperbaiki agar pin area spesifik)
+                // GMaps Update
                 let lat = row['LAT'] || row['LATITUDE'];
                 let long = row['LONG'] || row['LONGITUDE'];
                 if (lat !== undefined && long !== undefined) {
                     const gIframe = document.getElementById('val-gmaps');
                     if (gIframe) {
-                        gIframe.src = `https://maps.google.com/maps?q=${lat},${long}&z=14&output=embed`;
+                        gIframe.src = `https://maps.google.com/maps?q=$${lat},${long}&z=14&output=embed`;
                         log(`✅ GMaps diupdate ke Lat: ${lat}, Long: ${long}`, 'success');
                     }
                 }
