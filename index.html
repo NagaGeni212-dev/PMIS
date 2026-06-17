@@ -58,14 +58,46 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             gap: 8px;
         }
-        .sub-nav div { cursor: pointer; color: #555; padding: 2px 5px; }
-        .sub-nav div.active { color: black; border-bottom: 2px solid var(--primary-red); }
+        .sub-nav div { 
+            cursor: pointer; 
+            color: #555; 
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        .sub-nav div:hover { background-color: #f0f0f0; }
+        .sub-nav div.active { 
+            color: white; 
+            background-color: var(--primary-red);
+            border-bottom: none;
+        }
 
+        /* ===== CONTENT PANELS ===== */
+        .content-wrapper {
+            min-height: calc(100vh - 200px);
+        }
+
+        .content-panel {
+            display: none;
+            padding: 12px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .content-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ===== HOME PANEL ===== */
         .dashboard-container {
             display: grid;
             grid-template-columns: minmax(240px, 1.2fr) minmax(400px, 4fr) minmax(260px, 1.3fr);
             gap: 12px;
-            padding: 12px;
             height: auto;
             box-sizing: border-box;
         }
@@ -105,7 +137,8 @@
         .contract-table td { font-weight: bold; font-size: 12px; }
         .pm-box { text-align: center; font-size: 11px; border-top: 1px solid #EEE; padding-top: 8px; margin-bottom: 8px; }
         .pm-name { color: var(--primary-red); font-weight: bold; font-size: 12px; }
-        .btn-document { background: #0056b3; color: white; text-align: center; padding: 6px; font-size: 11px; font-weight: bold; border-radius: 3px; text-decoration: none; display: block; margin: 4px 0; }
+        .btn-document { background: #0056b3; color: white; text-align: center; padding: 6px; font-size: 11px; font-weight: bold; border-radius: 3px; text-decoration: none; display: block; margin: 4px 0; cursor: pointer; border: none; }
+        .btn-document:hover { background: #003d82; }
         
         .countdown-title { text-align: center; font-size: 11px; font-weight: bold; color: #444; margin-top: auto; margin-bottom: 4px; padding-top: 10px; }
         .countdown-box { background: #333; color: #FFC000; font-family: 'Courier New', Courier, monospace; font-size: 16px; text-align: center; padding: 8px; letter-spacing: 0.5px; font-weight: bold; border-radius: 3px; }
@@ -154,7 +187,7 @@
         .bottom-charts-row { display: grid; grid-template-columns: minmax(130px, 1.2fr) 3fr minmax(90px, 0.8fr); gap: 12px; height: 160px; }
         .progress-summary-card { background: var(--dark-blue); color: white; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         
-        .circle-progress { width: 65px; height: 65px; border-radius: 50%; background: conic-gradient(#00FF00 85.5%, #444 0); display: flex; justify-content: center; align-items: center; margin-bottom: 5px; transition: background 0.3s ease; }
+        .circle-progress { width: 65px; height: 65px; border-radius: 50%; background: conic-gradient(#00FF00 85.5%, #444 0); display: flex; justify-content: center; align-items: center; margin-bottom: 5px; }
         .circle-inner { width: 52px; height: 52px; background: var(--dark-blue); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 12px; }
         
         .curve-s-card { background: var(--dark-blue); color: white; display: flex; flex-direction: column; justify-content: space-between; padding: 10px; }
@@ -170,13 +203,491 @@
         .grid-value.red-text { color: red; }
         .qhsse-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; text-align: center; font-size: 11px; }
         .qhsse-val { font-weight: bold; color: red; font-size: 14px; margin-top: 4px; }
-        .btn-action { background: var(--dark-blue); color: white; font-size: 11px; font-weight: bold; text-align: center; padding: 8px; border-radius: 4px; cursor: pointer; margin-top: 4px; }
+        .btn-action { background: var(--dark-blue); color: white; font-size: 11px; font-weight: bold; text-align: center; padding: 8px; border-radius: 4px; cursor: pointer; margin-top: 4px; border: none; }
+        .btn-action:hover { background: #001d47; }
 
         .loading { color: #666; font-style: italic; }
         .error { color: red; font-weight: bold; }
 
-        @media (max-width: 1024px) {
-            .dashboard-container { grid-template-columns: 1fr; }
+        /* ===== PROGRESS MONITORING PANEL ===== */
+        .monitoring-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .maps-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 12px;
+            height: 280px;
+        }
+
+        .map-card {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+            min-height: 280px;
+        }
+
+        .map-card-title {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255,255,255,0.95);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .progress-table-card {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 12px;
+            overflow-x: auto;
+            max-height: 400px;
+        }
+
+        .progress-table {
+            width: 100%;
+            font-size: 11px;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .progress-table th {
+            background-color: var(--primary-red);
+            color: white;
+            padding: 8px;
+            font-weight: bold;
+            text-align: center;
+            position: sticky;
+            top: 0;
+        }
+
+        .progress-table td {
+            padding: 8px;
+            border-bottom: 1px solid #EEE;
+            text-align: center;
+        }
+
+        .progress-table tr:hover {
+            background-color: #F5F5F5;
+        }
+
+        /* ===== GALLERY STYLING (CAROUSEL MODE) ===== */
+        .gallery-wrapper {
+            background: white; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 20px;
+        }
+        
+        .gallery-tabs-container {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--card-gray);
+            padding-bottom: 12px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .gallery-tabs-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .gallery-tabs-container::-webkit-scrollbar-track {
+            background: #F0F0F0;
+            border-radius: 10px;
+        }
+
+        .gallery-tabs-container::-webkit-scrollbar-thumb {
+            background: #BFBFBF;
+            border-radius: 10px;
+        }
+
+        .gallery-tabs-container::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-red);
+        }
+        
+        .gallery-tab {
+            flex: 0 0 auto;
+            padding: 8px 16px; background: #E6E6E6; border-radius: 4px; 
+            cursor: pointer; font-size: 12px; font-weight: bold; color: #555; transition: 0.3s ease;
+        }
+        
+        .gallery-tab:hover { background: #CCC; }
+        .gallery-tab.active { background: var(--primary-red); color: white; }
+
+        .gallery-carousel-container {
+            display: flex; align-items: center; justify-content: center; gap: 15px; width: 100%;
+        }
+
+        .img-container {
+            width: 100%; max-width: 800px; aspect-ratio: 16 / 9; background: #222; 
+            position: relative; border-radius: 6px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .img-container img {
+            width: 100%; height: 100%; object-fit: contain; /* Menggunakan contain agar foto tidak terpotong */
+            transition: opacity 0.3s ease;
+        }
+
+        .photo-counter {
+            position: absolute; bottom: 15px; right: 15px; background: rgba(0,0,0,0.7);
+            color: white; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; letter-spacing: 1px;
+        }
+
+        .nav-btn {
+            background: var(--dark-blue); color: white; border: none; padding: 20px 15px; 
+            font-size: 24px; cursor: pointer; border-radius: 4px; transition: 0.3s ease;
+        }
+
+        .nav-btn:hover:not(:disabled) { background: var(--primary-red); transform: scale(1.05); }
+        .nav-btn:disabled { background: #CCC; cursor: not-allowed; opacity: 0.5; }
+        
+        .loading-gallery { text-align: center; color: #666; font-style: italic; padding: 40px; }
+        /* =========================== */
+
+        /* ===== CCTV PANEL (SPREADSHEET-DRIVEN CAROUSEL MODE) ===== */
+        .cctv-carousel-container {
+            align-items: center;
+        }
+
+        .cctv-viewer-container {
+            width: 100%;
+            max-width: 1000px;
+            aspect-ratio: 16 / 9;
+            background: #111;
+            position: relative;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .cctv-viewer-container video,
+        .cctv-viewer-container iframe,
+        .cctv-viewer-container img {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            object-fit: contain;
+            background: #111;
+        }
+
+        .cctv-header-overlay {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            z-index: 5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .cctv-camera-title {
+            background: rgba(0,0,0,0.72);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .cctv-status-badge {
+            background: #666;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .cctv-status-badge.active { background: green; }
+        .cctv-status-badge.offline { background: #666; }
+        .cctv-status-badge.warning { background: #FFC000; color: #111; }
+
+        .cctv-message {
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 30px;
+            box-sizing: border-box;
+            line-height: 1.5;
+            font-size: 13px;
+        }
+
+        .cctv-info-panel {
+            max-width: 1000px;
+            margin: 14px auto 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .cctv-info-item {
+            background: #F5F5F5;
+            border: 1px solid #E0E0E0;
+            border-radius: 4px;
+            padding: 8px 10px;
+        }
+
+        .cctv-info-label {
+            color: #666;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .cctv-info-value {
+            color: #222;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        /* ===== ORGANIZATION CHART PANEL ===== */
+        .orgchart-container {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 12px;
+            overflow: auto;
+            max-height: 700px;
+        }
+
+        .org-box {
+            background: var(--primary-red);
+            color: white;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 8px;
+            text-align: center;
+            min-width: 150px;
+            display: inline-block;
+        }
+
+        .org-title {
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .org-name {
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .org-line {
+            height: 2px;
+            background: #ccc;
+            margin: 12px 0;
+        }
+
+        /* ===== PROJECT DATA PANEL (SPREADSHEET-DRIVEN EMBED MODE) ===== */
+        .project-data-container {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .project-data-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .project-data-title-row h3 {
+            margin: 0;
+            color: #222;
+            font-size: 16px;
+        }
+
+        .project-data-status-badge {
+            background: #666;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .project-data-status-badge.active { background: green; }
+        .project-data-status-badge.warning { background: #FFC000; color: #111; }
+        .project-data-status-badge.offline { background: #666; }
+
+        .embed-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #111;
+        }
+
+        .embed-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        .project-data-message {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            min-height: 240px;
+            background: #111;
+            color: white;
+            border-radius: 4px;
+            padding: 30px;
+            text-align: center;
+            line-height: 1.5;
+            font-size: 13px;
+            box-sizing: border-box;
+        }
+
+        .project-data-info-panel {
+            margin-top: 14px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .project-data-info-item {
+            background: #F5F5F5;
+            border: 1px solid #E0E0E0;
+            border-radius: 4px;
+            padding: 8px 10px;
+        }
+
+        .project-data-info-label {
+            color: #666;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .project-data-info-value {
+            color: #222;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        .project-data-open-link {
+            color: var(--primary-red);
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .project-data-open-link:hover {
+            text-decoration: underline;
+        }
+
+        .debug-panel {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #0f0;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            max-width: 350px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            z-index: 1000;
+            display: none;
+            border: 1px solid #0f0;
+        }
+        .debug-panel.show { display: block; }
+
+        /* ===== RESPONSIVE BREAKPOINTS ===== */
+        @media (max-width: 1200px) {
+            .maps-row { 
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                height: 250px;
+            }
+            .map-card {
+                min-height: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .maps-row { 
+                grid-template-columns: 1fr;
+                height: 280px;
+            }
+            .map-card {
+                min-height: 280px;
+            }
+            .dashboard-container { 
+                grid-template-columns: 1fr; 
+            }
+            .bottom-charts-row { 
+                grid-template-columns: 1fr; 
+                height: auto; 
+            }
+            .cctv-container {
+                grid-template-columns: 1fr;
+            }
+            header {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .header-left {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sub-nav {
+                font-size: 10px;
+            }
+            .sub-nav div {
+                padding: 6px 8px;
+            }
+            .maps-row {
+                height: 220px;
+            }
+            .map-card {
+                min-height: 220px;
+            }
+            .progress-table {
+                font-size: 10px;
+            }
+            .progress-table th, .progress-table td {
+                padding: 6px 4px;
+            }
         }
     </style>
 </head>
@@ -199,128 +710,379 @@
     </header>
 
     <div class="sub-nav">
-        <div class="active">Home</div>
-        <div>Progress Monitoring</div>
-        <div>Progress Visualization</div>
-        <div>CCTV</div>
-        <div>Organization Chart</div>
-        <div>Project Data</div>
+        <div class="nav-item active" data-panel="home">Home</div>
+        <div class="nav-item" data-panel="monitoring">Progress Monitoring</div>
+        <div class="nav-item" data-panel="visualization">Progress Visualization</div>
+        <div class="nav-item" data-panel="cctv">CCTV</div>
+        <div class="nav-item" data-panel="orgchart">Organization Chart</div>
+        <div class="nav-item" data-panel="projectdata">Project Data</div>
     </div>
 
-    <div class="dashboard-container">
+    <div class="content-wrapper">
         
-        <div class="column">
-            <div class="card">
-                <div class="card-header">Project Information</div>
-                <div style="text-align: center; margin: 10px 0;"><strong style="color: #0056b3;">KEMENPU | HK</strong></div>
+        <!-- HOME PANEL -->
+        <div id="home" class="content-panel active">
+            <div class="dashboard-container">
                 
-                <table class="contract-table">
-                    <tr><th>Contract Value</th><th>Contract Duration</th></tr>
-                    <tr><td id="val-contract" class="loading">Memuat...</td><td id="val-duration" class="loading">Memuat...</td></tr>
-                </table>
-                
-                <div class="pm-box">
-                    <div>Project Manager:</div>
-                    <div class="pm-name" id="val-project-manager" class="loading">Memuat...</div>
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">Project Information</div>
+                        <div style="text-align: center; margin: 10px 0;"><strong style="color: #0056b3;">KEMENPU | HK</strong></div>
+                        
+                        <table class="contract-table">
+                            <tr><th>Contract Value</th><th>Contract Duration</th></tr>
+                            <tr><td id="val-contract">Memuat...</td><td id="val-duration">Memuat...</td></tr>
+                        </table>
+                        
+                        <div class="pm-box">
+                            <div>Project Manager:</div>
+                            <div class="pm-name" id="val-project-manager">Memuat...</div>
+                        </div>
+                        
+                        <button class="btn-document">Contract Document</button>
+                        
+                        <div class="countdown-title">Sisa Waktu Pekerjaan</div>
+                        <div id="countdown" class="countdown-box">000 Hari 00:00:00</div>
+                    </div>
+                    
+                    <div class="card card-mini-map">
+                        <div class="mini-map-container">
+                            <iframe id="val-gmaps" src="https://maps.google.com/maps?q=-1.1274,116.6856&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                    
+                    <div class="weather-title" id="weather-city-label">Prakiraan Cuaca</div>
+                    <div class="weather-box" id="weather-container">
+                        <div class="loading" style="width: 100%; color: white;">Memuat cuaca...</div>
+                    </div>
                 </div>
-                
-                <a href="#" class="btn-document">Contract Document</a>
-                
-                <div class="countdown-title">Sisa Waktu Pekerjaan</div>
-                <div id="countdown" class="countdown-box">000 Hari 00:00:00</div>
-            </div>
-            
-            <div class="card card-mini-map">
-                <div class="mini-map-container">
-                    <iframe id="val-gmaps" src="https://maps.google.com/maps?q=-1.1274,116.6856&z=14&output=embed" allowfullscreen="" loading="lazy"></iframe>
+
+                <div class="center-column">
+                    <div class="map-section">
+                        <div class="map-floating-header">
+                            <span style="color:#e60000; font-weight:bold;">⬅ 3D MAP VIEW</span>
+                            <span>CARTO-GL VOYAGER</span>
+                        </div>
+                        <div id="map"></div>
+                    </div>
+
+                    <div class="bottom-charts-row">
+                        <div class="card progress-summary-card">
+                            <div id="val-month-year" style="font-size: 10px; margin-bottom: 5px;">Progress Summary<br>Memuat...</div>
+                            <div class="circle-progress">
+                                <div class="circle-inner" id="val-progress-summary">Memuat...</div>
+                            </div>
+                            <div id="val-plan-dev" style="font-size: 8px; color: #AAA;">Plan: - | Dev: -</div>
+                        </div>
+
+                        <div class="card curve-s-card">
+                            <div class="card-header" style="background:none; text-align:left; margin:0; padding:0;">KURVA S</div>
+                            <div style="position: relative; height: 120px; width: 100%; margin-top: 5px;">
+                                <canvas id="sCurveChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="kpi-column">
+                            <div id="tag-spi" class="kpi-tag" style="background:#666;">SPI<br><span id="val-spi">-</span></div>
+                            <div id="tag-epi" class="kpi-tag" style="background:#666;">EPI<br><span id="val-epi">-</span></div>
+                            <div id="tag-cpi" class="kpi-tag" style="background:#666;">CPI<br><span id="val-cpi">-</span></div>
+                            <div class="performa-box">
+                                <div>PERFORMA</div>
+                                <div id="val-performa" class="warning-banner">MEMUAT...</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="weather-title" id="weather-city-label">Prakiraan Cuaca</div>
-            <div class="weather-box" id="weather-container">
-                <div class="loading" style="width: 100%; color: white;">Memuat cuaca...</div>
+
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">Overview Finansial</div>
+                        
+                        <div class="grid-data">
+                            <div><div class="grid-label">HB</div><div class="grid-value red-text" id="val-hb">Memuat...</div></div>
+                            <div><div class="grid-label">HPP ARP</div><div class="grid-value" id="val-hpp-arp">Memuat...</div></div>
+                            <div><div class="grid-label">Real Progress</div><div class="grid-value red-text" id="val-real-progress">Memuat...</div></div>
+                            <div><div class="grid-label">HPP Real</div><div class="grid-value" id="val-hpp-real">Memuat...</div></div>
+                        </div>
+
+                        <div style="text-align:center; font-size:10px; margin-bottom:2px;">EAC %</div>
+                        <div class="grid-value" style="text-align:center; margin-bottom:12px;" id="val-eac">Memuat...</div>
+
+                        <div class="card-header" style="margin-top:5px;">Solvabilitas</div>
+                        <div class="grid-data">
+                            <div><div class="grid-label">Cash In</div><div class="grid-value red-text" id="val-cash-in">Memuat...</div></div>
+                            <div><div class="grid-label">Defisit / Surplus</div><div class="grid-value" id="val-defisit">Memuat...</div></div>
+                        </div>
+
+                        <div class="card-header qhsse-header">QHSSE</div>
+                        <div class="qhsse-row">
+                            <div><div class="grid-label">NC</div><div class="qhsse-val" id="val-nc">0</div></div>
+                            <div><div class="grid-label">Nearmiss</div><div class="qhsse-val" id="val-nearmiss">0</div></div>
+                            <div><div class="grid-label">Fatality</div><div class="qhsse-val" id="val-fatality">0</div></div>
+                        </div>
+                    </div>
+
+                    <button class="btn-action">Issue Log & Action Plan</button>
+                    <button class="btn-action">3 Top Risk</button>
+                </div>
+
             </div>
         </div>
 
-        <div class="center-column">
-            <div class="map-section">
-                <div class="map-floating-header">
-                    <span style="color:#e60000; font-weight:bold;">⬅ 3D MAP VIEW</span>
-                    <span>CARTO-GL VOYAGER</span>
-                </div>
-                <div id="map"></div>
-            </div>
-
-            <div class="bottom-charts-row">
-                <div class="card progress-summary-card">
-                    <div id="val-month-year" style="font-size: 10px; margin-bottom: 5px;">Progress Summary<br>Memuat...</div>
-                    <div class="circle-progress">
-                        <div class="circle-inner" id="val-progress-summary" class="loading">Memuat...</div>
+        <!-- PROGRESS MONITORING PANEL -->
+        <div id="monitoring" class="content-panel">
+            <div class="monitoring-container">
+                <div class="maps-row">
+                    <div class="map-card">
+                        <div class="map-card-title">3D Map - Site View Left</div>
+                        <div id="map-monitoring-left" style="width: 100%; height: 100%;"></div>
                     </div>
-                    <div id="val-plan-dev" style="font-size: 8px; color: #AAA;">Plan: - | Dev: -</div>
-                </div>
-
-                <div class="card curve-s-card">
-                    <div class="card-header" style="background:none; text-align:left; margin:0; padding:0;">KURVA S</div>
-                    <div style="position: relative; height: 120px; width: 100%; margin-top: 5px;">
-                        <canvas id="sCurveChart"></canvas>
+                    <div class="map-card">
+                        <div class="map-card-title">3D Map - Site View Right</div>
+                        <div id="map-monitoring-right" style="width: 100%; height: 100%;"></div>
                     </div>
                 </div>
 
-                <div class="kpi-column">
-                    <div id="tag-spi" class="kpi-tag" style="background:#666;">SPI<br><span id="val-spi">-</span></div>
-                    <div id="tag-epi" class="kpi-tag" style="background:#666;">EPI<br><span id="val-epi">-</span></div>
-                    <div id="tag-cpi" class="kpi-tag" style="background:#666;">CPI<br><span id="val-cpi">-</span></div>
-                    <div class="performa-box">
-                        <div>PERFORMA</div>
-                        <div id="val-performa" class="warning-banner">MEMUAT...</div>
+                <div class="progress-table-card">
+                    <div id="progress-monitoring-tabs" class="gallery-tabs-container"></div>
+
+                    <div id="progress-monitoring-loading" class="loading-gallery">Memuat data Progress Monitoring...</div>
+
+                    <div id="progress-monitoring-content" style="display:none;">
+                        <div class="project-data-title-row">
+                            <h3 id="progress-monitoring-title">Progress Monitoring Dashboard</h3>
+                            <div id="progress-monitoring-status-badge" class="project-data-status-badge">Status</div>
+                        </div>
+
+                        <div id="progress-monitoring-embed" class="embed-container">
+                            <iframe id="progress-monitoring-iframe"
+                                title="Progress Monitoring Dashboard"
+                                src="about:blank"
+                                allow="autoplay; fullscreen; picture-in-picture"
+                                allowFullScreen="true">
+                            </iframe>
+                        </div>
+
+                        <div id="progress-monitoring-message" class="project-data-message"></div>
+
+                        <div id="progress-monitoring-info-panel" class="project-data-info-panel">
+                            <div class="project-data-info-item">
+                                <div class="project-data-info-label">Category</div>
+                                <div id="progress-monitoring-info-category" class="project-data-info-value">-</div>
+                            </div>
+                            <div class="project-data-info-item">
+                                <div class="project-data-info-label">Platform</div>
+                                <div id="progress-monitoring-info-platform" class="project-data-info-value">-</div>
+                            </div>
+                            <div class="project-data-info-item">
+                                <div class="project-data-info-label">Remark</div>
+                                <div id="progress-monitoring-info-remark" class="project-data-info-value">-</div>
+                            </div>
+                            <div class="project-data-info-item">
+                                <div class="project-data-info-label">Open Link</div>
+                                <div class="project-data-info-value"><a id="progress-monitoring-open-link" class="project-data-open-link" href="#" target="_blank" rel="noopener noreferrer">Open dashboard</a></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="column">
-            <div class="card">
-                <div class="card-header">Overview Finansial</div>
+        <!-- PROGRESS VISUALIZATION PANEL -->
+        <div id="visualization" class="content-panel">
+            <div class="gallery-wrapper">
+                <div id="gallery-tabs" class="gallery-tabs-container"></div>
                 
-                <div class="grid-data">
-                    <div><div class="grid-label">HB</div><div class="grid-value red-text" id="val-hb" class="loading">Memuat...</div></div>
-                    <div><div class="grid-label">HPP ARP</div><div class="grid-value" id="val-hpp-arp" class="loading">Memuat...</div></div>
-                    <div><div class="grid-label">Real Progress</div><div class="grid-value red-text" id="val-real-progress" class="loading">Memuat...</div></div>
-                    <div><div class="grid-label">HPP Real</div><div class="grid-value" id="val-hpp-real" class="loading">Memuat...</div></div>
-                </div>
+                <div id="gallery-loading" class="loading-gallery">Memuat data galeri...</div>
 
-                <div style="text-align:center; font-size:10px; margin-bottom:2px;">EAC %</div>
-                <div class="grid-value" style="text-align:center; margin-bottom:12px;" id="val-eac" class="loading">Memuat...</div>
-
-                <div class="card-header" style="margin-top:5px;">Solvabilitas</div>
-                <div class="grid-data">
-                    <div><div class="grid-label">Cash In</div><div class="grid-value red-text" id="val-cash-in" class="loading">Memuat...</div></div>
-                    <div><div class="grid-label">Defisit / Surplus</div><div class="grid-value" id="val-defisit" class="loading">Memuat...</div></div>
-                </div>
-
-                <div class="card-header qhsse-header">QHSSE</div>
-                <div class="qhsse-row">
-                    <div><div class="grid-label">NC</div><div class="qhsse-val" id="val-nc">0</div></div>
-                    <div><div class="grid-label">Nearmiss</div><div class="qhsse-val" id="val-nearmiss">0</div></div>
-                    <div><div class="grid-label">Fatality</div><div class="qhsse-val" id="val-fatality">0</div></div>
+                <div id="gallery-carousel" class="gallery-carousel-container" style="display:none;">
+                    <button id="btn-prev-photo" class="nav-btn" onclick="prevPhoto()">&#10094;</button>
+                    
+                    <div class="img-container">
+                        <img id="carousel-image" src="" alt="Dokumentasi Lapangan">
+                        <div id="photo-counter" class="photo-counter">1 / 1</div>
+                    </div>
+                    
+                    <button id="btn-next-photo" class="nav-btn" onclick="nextPhoto()">&#10095;</button>
                 </div>
             </div>
+        </div>
 
-            <div class="btn-action">Issue Log & Action Plan</div>
-            <div class="btn-action">3 Top Risk</div>
+        <!-- CCTV PANEL -->
+        <div id="cctv" class="content-panel">
+            <div class="gallery-wrapper">
+                <div id="cctv-tabs" class="gallery-tabs-container"></div>
+
+                <div id="cctv-loading" class="loading-gallery">Memuat data CCTV...</div>
+
+                <div id="cctv-carousel" class="gallery-carousel-container cctv-carousel-container" style="display:none;">
+                    <button id="btn-prev-cctv" class="nav-btn" onclick="prevCctv()">&#10094;</button>
+
+                    <div class="cctv-viewer-container">
+                        <div class="cctv-header-overlay">
+                            <div id="cctv-camera-title" class="cctv-camera-title">CCTV</div>
+                            <div id="cctv-status-badge" class="cctv-status-badge">Status</div>
+                        </div>
+
+                        <video id="cctv-video" controls autoplay muted playsinline style="display:none;"></video>
+                        <iframe id="cctv-iframe" src="about:blank" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="display:none;"></iframe>
+                        <img id="cctv-image" src="" alt="CCTV Stream" style="display:none;">
+                        <div id="cctv-message" class="cctv-message"></div>
+
+                        <div id="cctv-counter" class="photo-counter">CCTV 1 / 1</div>
+                    </div>
+
+                    <button id="btn-next-cctv" class="nav-btn" onclick="nextCctv()">&#10095;</button>
+                </div>
+
+                <div id="cctv-info-panel" class="cctv-info-panel" style="display:none;">
+                    <div class="cctv-info-item">
+                        <div class="cctv-info-label">Location</div>
+                        <div id="cctv-info-location" class="cctv-info-value">-</div>
+                    </div>
+                    <div class="cctv-info-item">
+                        <div class="cctv-info-label">Stream Type</div>
+                        <div id="cctv-info-type" class="cctv-info-value">-</div>
+                    </div>
+                    <div class="cctv-info-item">
+                        <div class="cctv-info-label">Remark</div>
+                        <div id="cctv-info-remark" class="cctv-info-value">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ORGANIZATION CHART PANEL -->
+        <div id="orgchart" class="content-panel">
+            <div class="orgchart-container">
+                <div style="text-align: center;">
+                    <div class="org-box">
+                        <div class="org-title">Project Manager</div>
+                        <div class="org-name" id="org-pm">Daryanto Aloysius</div>
+                    </div>
+                    <div class="org-line"></div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 20px; text-align: center;">
+                    <div>
+                        <div class="org-box">
+                            <div class="org-title">Technical Manager</div>
+                            <div class="org-name">Name TBA</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="org-box">
+                            <div class="org-title">Financial Manager</div>
+                            <div class="org-name">Name TBA</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="org-box">
+                            <div class="org-title">Safety Manager</div>
+                            <div class="org-name">Name TBA</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="org-line" style="margin-top: 40px;"></div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 20px; text-align: center;">
+                    <div class="org-box">
+                        <div class="org-title">Site Engineer</div>
+                        <div class="org-name">Name TBA</div>
+                    </div>
+                    <div class="org-box">
+                        <div class="org-title">Quality Control</div>
+                        <div class="org-name">Name TBA</div>
+                    </div>
+                    <div class="org-box">
+                        <div class="org-title">HSE Officer</div>
+                        <div class="org-name">Name TBA</div>
+                    </div>
+                    <div class="org-box">
+                        <div class="org-title">Admin Staff</div>
+                        <div class="org-name">Name TBA</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROJECT DATA PANEL -->
+        <div id="projectdata" class="content-panel">
+            <div class="project-data-container">
+                <div id="project-data-tabs" class="gallery-tabs-container"></div>
+
+                <div id="project-data-loading" class="loading-gallery">Memuat data Project Data...</div>
+
+                <div id="project-data-content" style="display:none;">
+                    <div class="project-data-title-row">
+                        <h3 id="project-data-title">Project Data Dashboard</h3>
+                        <div id="project-data-status-badge" class="project-data-status-badge">Status</div>
+                    </div>
+
+                    <div id="project-data-embed" class="embed-container">
+                        <iframe id="project-data-iframe"
+                            title="Project Data Dashboard"
+                            src="about:blank"
+                            allow="autoplay; fullscreen; picture-in-picture"
+                            allowFullScreen="true">
+                        </iframe>
+                    </div>
+
+                    <div id="project-data-message" class="project-data-message"></div>
+
+                    <div id="project-data-info-panel" class="project-data-info-panel">
+                        <div class="project-data-info-item">
+                            <div class="project-data-info-label">Category</div>
+                            <div id="project-data-info-category" class="project-data-info-value">-</div>
+                        </div>
+                        <div class="project-data-info-item">
+                            <div class="project-data-info-label">Platform</div>
+                            <div id="project-data-info-platform" class="project-data-info-value">-</div>
+                        </div>
+                        <div class="project-data-info-item">
+                            <div class="project-data-info-label">Remark</div>
+                            <div id="project-data-info-remark" class="project-data-info-value">-</div>
+                        </div>
+                        <div class="project-data-info-item">
+                            <div class="project-data-info-label">Open Link</div>
+                            <div class="project-data-info-value"><a id="project-data-open-link" class="project-data-open-link" href="#" target="_blank" rel="noopener noreferrer">Open dashboard</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
-
     <script src="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <script>
-        // ===== UTILITIES =====
+        // ===== GLOBAL VARIABLES =====
+        let globalMap, mapMonitoringLeft, mapMonitoringRight, sCurveChart;
+        let countdownState = { intervalId: null, currentTargetDate: null, countdownStarted: false };
+
+        // ===== DEBUG UTILITIES =====
+        const DEBUG = false;
+        const debugPanel = document.getElementById('debugPanel');
+        
         function log(message, type = 'info') {
             const timestamp = new Date().toLocaleTimeString();
+            let icon = '📝';
+            let color = '#0f0';
+            if(type === 'error') { icon = '❌'; color = '#f55'; }
+            else if(type === 'warn') { icon = '⚠️'; color = '#fd0'; }
+            else if(type === 'success') { icon = '✅'; color = '#0f0'; }
+            
+            const logEntry = `<div style="color:${color}; margin-bottom:3px;">[${timestamp}] ${icon} ${message}</div>`;
             console.log(`[${timestamp}] ${type.toUpperCase()}: ${message}`);
+            
+            if (DEBUG && debugPanel) {
+                debugPanel.classList.add('show');
+                debugPanel.innerHTML += logEntry;
+                debugPanel.scrollTop = debugPanel.scrollHeight;
+            }
         }
 
         // ===== CONFIGURATION =====
@@ -339,18 +1101,72 @@
             }
         };
 
-        // ===== MAP & STATE =====
-        let countdownState = { intervalId: null, currentTargetDate: null, countdownStarted: false };
+        // ===== NAVIGATION & PANEL SWITCHING =====
+        const navItems = document.querySelectorAll('.nav-item');
+        const contentPanels = document.querySelectorAll('.content-panel');
 
-        const map = new maplibregl.Map({
-            container: 'map',
-            style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json', 
-            center: [116.6856, -1.1274], zoom: 13.5, pitch: 60, bearing: 25, antialias: true
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const panelId = item.getAttribute('data-panel');
+                
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+
+                contentPanels.forEach(panel => panel.classList.remove('active'));
+
+                const selectedPanel = document.getElementById(panelId);
+                if (selectedPanel) {
+                    selectedPanel.classList.add('active');
+                    
+                    setTimeout(() => {
+                        if (globalMap) globalMap.resize();
+                        if (sCurveChart) sCurveChart.resize();
+                        if (mapMonitoringLeft) mapMonitoringLeft.resize();
+                        if (mapMonitoringRight) mapMonitoringRight.resize();
+                    }, 100);
+
+                    if (panelId === 'monitoring') {
+                        initMonitoringMaps();
+                    }
+                }
+            });
         });
 
-        window.addEventListener('resize', () => map.resize());
+        // ===== MAP INITIALIZATION =====
+        function initMap() {
+            globalMap = new maplibregl.Map({
+                container: 'map',
+                style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json', 
+                center: [116.6856, -1.1274], zoom: 13.5, pitch: 60, bearing: 25, antialias: true
+            });
+        }
 
-        // ===== DYNAMIC 5-DAY WEATHER API =====
+        function initMonitoringMaps() {
+            if (mapMonitoringLeft) return;
+
+            mapMonitoringLeft = new maplibregl.Map({
+                container: 'map-monitoring-left',
+                style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json', 
+                center: [116.6800, -1.1300], zoom: 14, pitch: 30, bearing: 0, antialias: true
+            });
+
+            mapMonitoringRight = new maplibregl.Map({
+                container: 'map-monitoring-right',
+                style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json', 
+                center: [116.6900, -1.1250], zoom: 14, pitch: 30, bearing: 45, antialias: true
+            });
+
+            log('✅ Monitoring maps initialized', 'success');
+        }
+
+        window.addEventListener('resize', () => {
+            if (globalMap) globalMap.resize();
+            if (mapMonitoringLeft) mapMonitoringLeft.resize();
+            if (mapMonitoringRight) mapMonitoringRight.resize();
+            if (sCurveChart) sCurveChart.resize();
+        });
+
+        // ===== WEATHER FUNCTIONS =====
         function getWeatherDetail(code) {
             if (code === 0) return { icon: '☀️', text: 'Cerah' };
             if (code === 1 || code === 2 || code === 3) return { icon: '⛅', text: 'Berawan' };
@@ -383,7 +1199,7 @@
                 for(let i=0; i<5; i++) {
                     const date = new Date(days[i]);
                     const wDetail = getWeatherDetail(codes[i]);
-                    weatherHTML += `<div class="weather-day-box"><strong>${dayNames[date.getDay()]}</strong><div style="font-size:18px;">${wDetail.icon}</div><div style="font-size:11px;">${Math.round(temps[i])}°C</div><div style="font-size:8px; opacity:0.8;">${wDetail.text}</div></div>`;
+                    weatherHTML += `<div class="weather-day-box"><strong>${dayNames[date.getDay()]}</strong><div style="font-size:18px;">${wDetail.icon}</div><div style="font-size:11px;">${Math.round(temps[i])}°C</div></div>`;
                 }
                 document.getElementById('weather-container').innerHTML = weatherHTML;
             } catch (error) { document.getElementById('weather-container').innerHTML = '<div style="width:100%; color:red;">Gagal memuat cuaca</div>'; }
@@ -411,8 +1227,7 @@
             countdownState.intervalId = setInterval(update, 1000);
         }
 
-        // ===== S-CURVE CHART INITIALIZATION =====
-        let sCurveChart;
+        // ===== S-CURVE CHART =====
         function initSCurveChart() {
             const ctx = document.getElementById('sCurveChart').getContext('2d');
             sCurveChart = new Chart(ctx, {
@@ -435,7 +1250,6 @@
             });
         }
 
-        // ===== DYNAMIC S-CURVE UPDATER =====
         function updateSCurve(row, isLive) {
             if (!sCurveChart) return;
 
@@ -522,10 +1336,8 @@
             }
         }
 
-        // ===== MAIN DASHBOARD UPDATER =====
         function updateDashboard(rawRow, isLive = false) {
             try {
-                // NORMALISASI: Mengubah header ke UPPERCASE dan menghapus spasi/simbol
                 const row = {};
                 for (let key in rawRow) {
                     if (rawRow.hasOwnProperty(key)) {
@@ -536,14 +1348,13 @@
 
                 if (isLive) {
                     log(`Data diterima. Jumlah kolom: ${Object.keys(row).length}`, 'info');
+                    console.log("DAFTAR KOLOM TERBACA DARI SPREADSHEET:", Object.keys(row));
                 }
 
-                // Dynamic Date
                 const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
                 const today = new Date();
                 document.getElementById('val-month-year').innerHTML = `Progress Summary<br>${monthNames[today.getMonth()]} ${today.getFullYear()}`;
 
-                // Text Fields Mapping
                 const fieldsToUpdate = {
                     'val-contract': 'CONTRACTVALUE', 'val-duration': 'CONTRACTDURATION',
                     'val-project-manager': 'PROJECTMANAGER', 'val-progress-summary': 'PROGRESSSUMMARY',
@@ -562,7 +1373,6 @@
                     }
                 }
 
-                // KPIs
                 const parseToNum = (val) => parseFloat(String(val || '0').replace(/%/g, '').replace(/,/g, '.').trim()) || 0;
                 let actSummary = parseToNum(row['PROGRESSSUMMARY']);
                 let planSummary = parseToNum(row['PROGRESSPLAN']);
@@ -592,30 +1402,671 @@
                     document.getElementById('val-plan-dev').innerText = `Plan: ${pText} | Dev: ${devVal > 0 ? '+' : ''}${devVal.toFixed(3)}%`;
                 }
 
-                // Panggil Kurva S dengan flag "isLive"
                 updateSCurve(row, isLive);
 
                 if (row['CITYNAME'] || row['KOTA']) updateWeather(row['CITYNAME'] || row['KOTA']);
                 if (row['TARGETFINISH']) initCountdown(row['TARGETFINISH']);
                 
-                // GMaps Update (Centered exactly on Lat/Long from Spreadsheet)
                 let lat = row['LAT'] || row['LATITUDE'];
                 let long = row['LONG'] || row['LONGITUDE'];
-                
                 if (lat !== undefined && long !== undefined) {
                     const gIframe = document.getElementById('val-gmaps');
                     if (gIframe) {
                         gIframe.src = `https://maps.google.com/maps?q=${lat},${long}&z=14&output=embed`;
-                        console.log(`✅ GMaps diupdate ke Lat: ${lat}, Long: ${long}`);
+                        log(`✅ GMaps diupdate ke Lat: ${lat}, Long: ${long}`, 'success');
                     }
                 }
             } catch (error) { log(`Dashboard error: ${error.message}`, 'error'); }
         }
 
+        // ===== STATE MANAGEMENT GALLERY =====
+        const GALLERY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0bXGaASnad47Vz7XXLRh2-XHa5IFsRPH98yNKadgpmhE0PO_CbWrFLZMbYjWZLuO61s_ZeeYPpkh5/pub?gid=0&single=true&output=csv';
+        let galleryDataObj = {};
+        let currentGalleryMonth = '';
+        let currentPhotoIndex = 0;
+
+        function convertDriveLink(url) {
+            if (!url) return '';
+            const driveRegex = /\/file\/d\/(.*?)\//;
+            const match = url.match(driveRegex);
+            if (match && match[1]) return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+            return url;
+        }
+
+        function nextPhoto() {
+            const photos = galleryDataObj[currentGalleryMonth];
+            if (currentPhotoIndex < photos.length - 1) {
+                currentPhotoIndex++;
+                updateCarouselDisplay();
+            }
+        }
+
+        function prevPhoto() {
+            if (currentPhotoIndex > 0) {
+                currentPhotoIndex--;
+                updateCarouselDisplay();
+            }
+        }
+
+        function updateCarouselDisplay() {
+            const photos = galleryDataObj[currentGalleryMonth];
+            if(!photos || photos.length === 0) return;
+
+            const imgElement = document.getElementById('carousel-image');
+            imgElement.style.opacity = 0;
+
+            setTimeout(() => {
+                imgElement.src = photos[currentPhotoIndex];
+                imgElement.style.opacity = 1;
+            }, 150);
+
+            document.getElementById('photo-counter').innerText = `Foto ${currentPhotoIndex + 1} / ${photos.length}`;
+
+            document.getElementById('btn-prev-photo').disabled = (currentPhotoIndex === 0);
+            document.getElementById('btn-next-photo').disabled = (currentPhotoIndex === photos.length - 1);
+        }
+
+        function selectGalleryMonth(month) {
+            currentGalleryMonth = month;
+            currentPhotoIndex = 0;
+
+            document.querySelectorAll('#gallery-tabs .gallery-tab').forEach(tab => {
+                if(tab.innerText === month) tab.classList.add('active');
+                else tab.classList.remove('active');
+            });
+
+            updateCarouselDisplay();
+        }
+
+        function fetchAndRenderGallery() {
+            Papa.parse(GALLERY_CSV_URL, {
+                download: true, header: true, skipEmptyLines: true,
+                complete: function(results) {
+                    const data = results.data;
+                    const groupedByMonth = {};
+
+                    data.forEach(row => {
+                        let cleanRow = {};
+                        for (let key in row) cleanRow[String(key).toUpperCase().replace(/\s+/g, '')] = row[key];
+
+                        const rawDate = cleanRow['TANGGAL'] || cleanRow['DATE'];
+                        const rawLink = cleanRow['LINKFOTO'] || cleanRow['FOTO'] || cleanRow['LINK'];
+
+                        if (rawDate && rawLink) {
+                            const dateObj = new Date(rawDate);
+                            if (!isNaN(dateObj.getTime())) {
+                                const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                                const monthYearStr = `${monthNames[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
+                                const imgUrl = convertDriveLink(rawLink);
+
+                                if (!groupedByMonth[monthYearStr]) groupedByMonth[monthYearStr] = [];
+                                groupedByMonth[monthYearStr].push(imgUrl);
+                            }
+                        }
+                    });
+
+                    galleryDataObj = groupedByMonth;
+                    const months = Object.keys(galleryDataObj);
+
+                    if (months.length === 0) {
+                        document.getElementById('gallery-loading').innerHTML = 'Tidak ada data foto yang ditemukan atau format tanggal salah.';
+                        return;
+                    }
+
+                    document.getElementById('gallery-loading').style.display = 'none';
+                    document.getElementById('gallery-carousel').style.display = 'flex';
+
+                    const tabsContainer = document.getElementById('gallery-tabs');
+                    tabsContainer.innerHTML = '';
+                    months.forEach(month => {
+                        const btn = document.createElement('div');
+                        btn.className = 'gallery-tab';
+                        btn.innerText = month;
+                        btn.onclick = () => selectGalleryMonth(month);
+                        tabsContainer.appendChild(btn);
+                    });
+
+                    selectGalleryMonth(months[0]);
+                },
+                error: function(err) {
+                    document.getElementById('gallery-loading').innerHTML = '<span style="color:red;">Gagal memuat data galeri.</span>';
+                }
+            });
+        }
+
+        // ===== STATE MANAGEMENT CCTV =====
+        const CCTV_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0bXGaASnad47Vz7XXLRh2-XHa5IFsRPH98yNKadgpmhE0PO_CbWrFLZMbYjWZLuO61s_ZeeYPpkh5/pub?gid=1874534706&single=true&output=csv';
+        let cctvDataList = [];
+        let currentCctvIndex = 0;
+        let hlsPlayer = null;
+
+        function getCleanValue(row, keys, fallback = '') {
+            for (const key of keys) {
+                if (row[key] !== undefined && String(row[key]).trim() !== '') return String(row[key]).trim();
+            }
+            return fallback;
+        }
+
+        function sanitizeStreamUrl(url) {
+            if (!url) return '';
+            const trimmed = String(url).trim();
+            const allowed = /^(https?:\/\/|rtsp:\/\/|rtmp:\/\/|about:blank)/i;
+            return allowed.test(trimmed) ? trimmed : '';
+        }
+
+        function detectStreamType(url, streamType) {
+            const type = String(streamType || '').toLowerCase();
+            const cleanUrl = String(url || '').toLowerCase();
+
+            if (type.includes('hls') || cleanUrl.includes('.m3u8')) return 'hls';
+            if (type.includes('rtsp') || cleanUrl.startsWith('rtsp://')) return 'rtsp';
+            if (type.includes('rtmp') || cleanUrl.startsWith('rtmp://')) return 'rtmp';
+            if (type.includes('webrtc') || type.includes('iframe') || type.includes('embed')) return 'iframe';
+            if (type.includes('mjpeg') || type.includes('image') || cleanUrl.match(/\.(jpg|jpeg|png|gif|webp|mjpeg)(\?|$)/)) return 'image';
+            if (cleanUrl.match(/\.(mp4|webm|ogg)(\?|$)/)) return 'video';
+            return 'iframe';
+        }
+
+        function stopCurrentCctvStream() {
+            const video = document.getElementById('cctv-video');
+            const iframe = document.getElementById('cctv-iframe');
+            const image = document.getElementById('cctv-image');
+            const message = document.getElementById('cctv-message');
+
+            if (hlsPlayer) {
+                hlsPlayer.destroy();
+                hlsPlayer = null;
+            }
+
+            if (video) {
+                video.pause();
+                video.removeAttribute('src');
+                video.load();
+                video.style.display = 'none';
+            }
+
+            if (iframe) {
+                iframe.src = 'about:blank';
+                iframe.style.display = 'none';
+            }
+
+            if (image) {
+                image.removeAttribute('src');
+                image.style.display = 'none';
+            }
+
+            if (message) {
+                message.innerHTML = '';
+                message.style.display = 'none';
+            }
+        }
+
+        function showCctvMessage(htmlMessage) {
+            const message = document.getElementById('cctv-message');
+            message.innerHTML = htmlMessage;
+            message.style.display = 'flex';
+        }
+
+        function loadCctvStream(camera) {
+            stopCurrentCctvStream();
+
+            const safeUrl = sanitizeStreamUrl(camera.url);
+            const streamType = detectStreamType(safeUrl, camera.streamType);
+            const video = document.getElementById('cctv-video');
+            const iframe = document.getElementById('cctv-iframe');
+            const image = document.getElementById('cctv-image');
+
+            if (!safeUrl) {
+                showCctvMessage('Stream URL kosong atau format URL tidak didukung. Gunakan URL http, https, rtsp, atau rtmp.');
+                return;
+            }
+
+            if (streamType === 'rtsp' || streamType === 'rtmp') {
+                showCctvMessage(`
+                    <div>
+                        <strong>Raw ${streamType.toUpperCase()} tidak bisa diputar langsung di browser.</strong><br>
+                        Convert dulu ke HLS (.m3u8), WebRTC, MJPEG, atau embed URL, lalu simpan link hasil convert di spreadsheet.
+                    </div>
+                `);
+                return;
+            }
+
+            if (streamType === 'hls') {
+                video.style.display = 'block';
+                if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    video.src = safeUrl;
+                    video.play().catch(() => {});
+                } else if (window.Hls && Hls.isSupported()) {
+                    hlsPlayer = new Hls({ enableWorker: true, lowLatencyMode: true });
+                    hlsPlayer.loadSource(safeUrl);
+                    hlsPlayer.attachMedia(video);
+                    hlsPlayer.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
+                    hlsPlayer.on(Hls.Events.ERROR, (event, data) => {
+                        if (data && data.fatal) showCctvMessage('Gagal memuat HLS stream. Cek URL .m3u8, CORS, atau status streaming server.');
+                    });
+                } else {
+                    showCctvMessage('Browser ini belum mendukung HLS player.');
+                }
+                return;
+            }
+
+            if (streamType === 'video') {
+                video.style.display = 'block';
+                video.src = safeUrl;
+                video.play().catch(() => {});
+                return;
+            }
+
+            if (streamType === 'image') {
+                image.style.display = 'block';
+                image.src = safeUrl;
+                return;
+            }
+
+            iframe.style.display = 'block';
+            iframe.src = safeUrl;
+        }
+
+        function updateCctvDisplay() {
+            if (!cctvDataList.length) return;
+
+            const camera = cctvDataList[currentCctvIndex];
+            const statusText = camera.status || 'Unknown';
+            const statusLower = statusText.toLowerCase();
+            const badge = document.getElementById('cctv-status-badge');
+
+            document.getElementById('cctv-camera-title').innerText = camera.name || `CCTV ${currentCctvIndex + 1}`;
+            document.getElementById('cctv-counter').innerText = `CCTV ${currentCctvIndex + 1} / ${cctvDataList.length}`;
+            document.getElementById('cctv-info-location').innerText = camera.location || '-';
+            document.getElementById('cctv-info-type').innerText = camera.streamType || detectStreamType(camera.url, camera.streamType).toUpperCase();
+            document.getElementById('cctv-info-remark').innerText = camera.remark || '-';
+
+            badge.innerText = statusText;
+            badge.className = 'cctv-status-badge';
+            if (statusLower.includes('active') || statusLower.includes('online') || statusLower.includes('aktif')) badge.classList.add('active');
+            else if (statusLower.includes('warning') || statusLower.includes('maintenance') || statusLower.includes('gangguan')) badge.classList.add('warning');
+            else badge.classList.add('offline');
+
+            document.querySelectorAll('#cctv-tabs .gallery-tab').forEach((tab, index) => {
+                tab.classList.toggle('active', index === currentCctvIndex);
+            });
+
+            document.getElementById('btn-prev-cctv').disabled = (currentCctvIndex === 0);
+            document.getElementById('btn-next-cctv').disabled = (currentCctvIndex === cctvDataList.length - 1);
+
+            loadCctvStream(camera);
+        }
+
+        function selectCctv(index) {
+            currentCctvIndex = index;
+            updateCctvDisplay();
+        }
+
+        function nextCctv() {
+            if (currentCctvIndex < cctvDataList.length - 1) {
+                currentCctvIndex++;
+                updateCctvDisplay();
+            }
+        }
+
+        function prevCctv() {
+            if (currentCctvIndex > 0) {
+                currentCctvIndex--;
+                updateCctvDisplay();
+            }
+        }
+
+        function fetchAndRenderCCTV() {
+            Papa.parse(CCTV_CSV_URL, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    const data = results.data || [];
+
+                    cctvDataList = data.map((row, index) => {
+                        const cleanRow = {};
+                        for (let key in row) {
+                            cleanRow[String(key).toUpperCase().replace(/[^A-Z0-9]/g, '')] = row[key];
+                        }
+
+                        const name = getCleanValue(cleanRow, ['CAMERANAME', 'CAMERA', 'NAMACAMERA', 'NAMAKAMERA', 'NAMACCTV', 'CCTVNAME', 'CCTV', 'NAMA', 'TITLE'], `CCTV ${index + 1}`);
+                        const location = getCleanValue(cleanRow, ['LOCATION', 'LOKASI', 'AREA', 'ZONA', 'ZONE'], '-');
+                        const streamType = getCleanValue(cleanRow, ['STREAMTYPE', 'TYPE', 'JENIS', 'FORMAT', 'TIPE'], 'Auto');
+                        const url = getCleanValue(cleanRow, ['STREAMURL', 'URL', 'LINK', 'LINKCCTV', 'CCTVURL', 'HLS', 'RTSP', 'EMBEDURL', 'IFRAME'], '');
+                        const status = getCleanValue(cleanRow, ['STATUS', 'CONDITION', 'KONDISI'], 'Active');
+                        const remark = getCleanValue(cleanRow, ['REMARK', 'KETERANGAN', 'NOTES', 'CATATAN', 'DESKRIPSI'], '-');
+
+                        return { name, location, streamType, url, status, remark };
+                    }).filter(camera => camera.url);
+
+                    if (cctvDataList.length === 0) {
+                        document.getElementById('cctv-loading').innerHTML = 'Tidak ada data CCTV yang ditemukan. Pastikan spreadsheet punya kolom StreamURL/URL/Link.';
+                        return;
+                    }
+
+                    const tabsContainer = document.getElementById('cctv-tabs');
+                    tabsContainer.innerHTML = '';
+
+                    cctvDataList.forEach((camera, index) => {
+                        const btn = document.createElement('div');
+                        btn.className = 'gallery-tab';
+                        btn.innerText = camera.name;
+                        btn.onclick = () => selectCctv(index);
+                        tabsContainer.appendChild(btn);
+                    });
+
+                    document.getElementById('cctv-loading').style.display = 'none';
+                    document.getElementById('cctv-carousel').style.display = 'flex';
+                    document.getElementById('cctv-info-panel').style.display = 'grid';
+
+                    selectCctv(0);
+                    log(`✅ CCTV: Menampilkan ${cctvDataList.length} kamera dari Spreadsheet`, 'success');
+                },
+                error: function(err) {
+                    document.getElementById('cctv-loading').innerHTML = '<span style="color:red;">Gagal memuat data CCTV dari spreadsheet.</span>';
+                    log('❌ CCTV CSV gagal dimuat', 'error');
+                }
+            });
+        }
+
+
+        // ===== STATE MANAGEMENT PROJECT DATA =====
+        const PROJECT_DATA_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0bXGaASnad47Vz7XXLRh2-XHa5IFsRPH98yNKadgpmhE0PO_CbWrFLZMbYjWZLuO61s_ZeeYPpkh5/pub?gid=873857565&single=true&output=csv';
+        let projectDataList = [];
+        let currentProjectDataIndex = 0;
+
+        function sanitizeEmbedUrl(url) {
+            if (!url) return '';
+            const trimmed = String(url).trim();
+            const allowed = /^(https?:\/\/|about:blank)/i;
+            return allowed.test(trimmed) ? trimmed : '';
+        }
+
+        function normalizeEmbedUrl(url, platform = '') {
+            let safeUrl = sanitizeEmbedUrl(url);
+            if (!safeUrl) return '';
+
+            const lowerPlatform = String(platform || '').toLowerCase();
+
+            // Auto-convert Google Looker Studio/Data Studio report links into embed links when needed.
+            if ((safeUrl.includes('lookerstudio.google.com/reporting/') || safeUrl.includes('datastudio.google.com/reporting/')) && !safeUrl.includes('/embed/reporting/')) {
+                safeUrl = safeUrl.replace('lookerstudio.google.com/reporting/', 'lookerstudio.google.com/embed/reporting/');
+                safeUrl = safeUrl.replace('datastudio.google.com/reporting/', 'datastudio.google.com/embed/reporting/');
+            }
+
+            // Keep already valid Power BI / Looker / published Google Sheet / web embed URLs as-is.
+            if (lowerPlatform.includes('looker') || lowerPlatform.includes('power') || lowerPlatform.includes('sheet') || lowerPlatform.includes('web')) return safeUrl;
+            return safeUrl;
+        }
+
+        function detectProjectDataPlatform(url, type) {
+            const cleanUrl = String(url || '').toLowerCase();
+            const cleanType = String(type || '').trim();
+            if (cleanType && cleanType.toLowerCase() !== 'auto') return cleanType;
+            if (cleanUrl.includes('powerbi.com')) return 'Power BI';
+            if (cleanUrl.includes('lookerstudio.google.com') || cleanUrl.includes('datastudio.google.com')) return 'Looker Studio';
+            if (cleanUrl.includes('docs.google.com/spreadsheets')) return 'Google Sheets';
+            if (cleanUrl.includes('tableau')) return 'Tableau';
+            return 'Web Embed';
+        }
+
+        function showProjectDataMessage(htmlMessage) {
+            const embed = document.getElementById('project-data-embed');
+            const iframe = document.getElementById('project-data-iframe');
+            const message = document.getElementById('project-data-message');
+
+            iframe.src = 'about:blank';
+            embed.style.display = 'none';
+            message.innerHTML = htmlMessage;
+            message.style.display = 'flex';
+        }
+
+        function loadProjectDataEmbed(item) {
+            const embed = document.getElementById('project-data-embed');
+            const iframe = document.getElementById('project-data-iframe');
+            const message = document.getElementById('project-data-message');
+            const embedUrl = normalizeEmbedUrl(item.url, item.platform);
+
+            if (!embedUrl) {
+                showProjectDataMessage('URL dashboard kosong atau format tidak didukung. Gunakan link http/https dari Google Looker Studio, Power BI, Google Sheets, Tableau, atau web dashboard lain.');
+                return;
+            }
+
+            message.style.display = 'none';
+            message.innerHTML = '';
+            embed.style.display = 'block';
+            iframe.src = embedUrl;
+        }
+
+        function updateProjectDataDisplay() {
+            if (!projectDataList.length) return;
+
+            const item = projectDataList[currentProjectDataIndex];
+            const statusText = item.status || 'Active';
+            const statusLower = statusText.toLowerCase();
+            const badge = document.getElementById('project-data-status-badge');
+            const platform = detectProjectDataPlatform(item.url, item.platform);
+            const embedUrl = normalizeEmbedUrl(item.url, platform);
+
+            document.getElementById('project-data-title').innerText = item.title || `Project Data ${currentProjectDataIndex + 1}`;
+            document.getElementById('project-data-info-category').innerText = item.category || '-';
+            document.getElementById('project-data-info-platform').innerText = platform || '-';
+            document.getElementById('project-data-info-remark').innerText = item.remark || '-';
+
+            const openLink = document.getElementById('project-data-open-link');
+            openLink.href = embedUrl || '#';
+            openLink.innerText = embedUrl ? 'Open dashboard' : 'No link';
+
+            badge.innerText = statusText;
+            badge.className = 'project-data-status-badge';
+            if (statusLower.includes('active') || statusLower.includes('online') || statusLower.includes('aktif')) badge.classList.add('active');
+            else if (statusLower.includes('warning') || statusLower.includes('maintenance') || statusLower.includes('review') || statusLower.includes('draft')) badge.classList.add('warning');
+            else badge.classList.add('offline');
+
+            document.querySelectorAll('#project-data-tabs .gallery-tab').forEach((tab, index) => {
+                tab.classList.toggle('active', index === currentProjectDataIndex);
+            });
+
+            loadProjectDataEmbed(item);
+        }
+
+        function selectProjectData(index) {
+            currentProjectDataIndex = index;
+            updateProjectDataDisplay();
+        }
+
+        function fetchAndRenderProjectData() {
+            Papa.parse(PROJECT_DATA_CSV_URL, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    const data = results.data || [];
+
+                    projectDataList = data.map((row, index) => {
+                        const cleanRow = {};
+                        for (let key in row) {
+                            cleanRow[String(key).toUpperCase().replace(/[^A-Z0-9]/g, '')] = row[key];
+                        }
+
+                        const title = getCleanValue(cleanRow, ['TITLE', 'DASHBOARDNAME', 'NAMADASHBOARD', 'REPORTNAME', 'NAMAREPORT', 'PROJECTDATA', 'NAMA', 'NAME'], `Project Data ${index + 1}`);
+                        const description = getCleanValue(cleanRow, ['DESCRIPTION', 'DESKRIPSI'], '');
+                        const category = getCleanValue(cleanRow, ['CATEGORY', 'KATEGORI', 'GROUP', 'MENU', 'SECTION', 'MODUL', 'MODULE'], '-');
+                        const platformRaw = getCleanValue(cleanRow, ['PLATFORM', 'TYPE', 'EMBEDTYPE', 'SOURCETYPE', 'JENIS', 'FORMAT', 'TIPE'], 'Auto');
+                        const url = getCleanValue(cleanRow, ['EMBEDURL', 'IFRAMESRC', 'IFRAME', 'URL', 'LINK', 'LINKWEB', 'WEBLINK', 'DASHBOARDURL', 'REPORTURL', 'POWERBI', 'LOOKER', 'DATASTUDIO'], '');
+                        const status = getCleanValue(cleanRow, ['STATUS', 'CONDITION', 'KONDISI'], 'Active');
+                        const remark = getCleanValue(cleanRow, ['REMARK', 'KETERANGAN', 'NOTES', 'CATATAN'], '-');
+
+                        return { title, description, category, platform: platformRaw, url, status, remark };
+                    }).filter(item => item.url);
+
+                    if (projectDataList.length === 0) {
+                        document.getElementById('project-data-loading').innerHTML = 'Tidak ada data Project Data yang ditemukan. Pastikan spreadsheet punya kolom URL/Link/EmbedURL.';
+                        return;
+                    }
+
+                    const tabsContainer = document.getElementById('project-data-tabs');
+                    tabsContainer.innerHTML = '';
+
+                    projectDataList.forEach((item, index) => {
+                        const btn = document.createElement('div');
+                        btn.className = 'gallery-tab';
+                        btn.innerText = item.description || item.title;
+                        btn.title = item.description || item.title;
+                        btn.onclick = () => selectProjectData(index);
+                        tabsContainer.appendChild(btn);
+                    });
+
+                    document.getElementById('project-data-loading').style.display = 'none';
+                    document.getElementById('project-data-content').style.display = 'block';
+
+                    selectProjectData(0);
+                    log(`✅ Project Data: Menampilkan ${projectDataList.length} embed dari Spreadsheet`, 'success');
+                },
+                error: function(err) {
+                    document.getElementById('project-data-loading').innerHTML = '<span style="color:red;">Gagal memuat Project Data dari spreadsheet.</span>';
+                    log('❌ Project Data CSV gagal dimuat', 'error');
+                }
+            });
+        }
+
+        // ===== STATE MANAGEMENT PROGRESS MONITORING EMBED =====
+        const PROGRESS_MONITORING_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0bXGaASnad47Vz7XXLRh2-XHa5IFsRPH98yNKadgpmhE0PO_CbWrFLZMbYjWZLuO61s_ZeeYPpkh5/pub?gid=256628508&single=true&output=csv';
+        let progressMonitoringList = [];
+        let currentProgressMonitoringIndex = 0;
+
+        function showProgressMonitoringMessage(htmlMessage) {
+            const embed = document.getElementById('progress-monitoring-embed');
+            const iframe = document.getElementById('progress-monitoring-iframe');
+            const message = document.getElementById('progress-monitoring-message');
+
+            iframe.src = 'about:blank';
+            embed.style.display = 'none';
+            message.innerHTML = htmlMessage;
+            message.style.display = 'flex';
+        }
+
+        function loadProgressMonitoringEmbed(item) {
+            const embed = document.getElementById('progress-monitoring-embed');
+            const iframe = document.getElementById('progress-monitoring-iframe');
+            const message = document.getElementById('progress-monitoring-message');
+            const embedUrl = normalizeEmbedUrl(item.url, item.platform);
+
+            if (!embedUrl) {
+                showProgressMonitoringMessage('URL dashboard kosong atau format tidak didukung. Gunakan link http/https dari Power BI, Google Looker Studio, Google Sheets, Tableau, atau web dashboard lain.');
+                return;
+            }
+
+            message.style.display = 'none';
+            message.innerHTML = '';
+            embed.style.display = 'block';
+            iframe.src = embedUrl;
+        }
+
+        function updateProgressMonitoringDisplay() {
+            if (!progressMonitoringList.length) return;
+
+            const item = progressMonitoringList[currentProgressMonitoringIndex];
+            const statusText = item.status || 'Active';
+            const statusLower = statusText.toLowerCase();
+            const badge = document.getElementById('progress-monitoring-status-badge');
+            const platform = detectProjectDataPlatform(item.url, item.platform);
+            const embedUrl = normalizeEmbedUrl(item.url, platform);
+
+            document.getElementById('progress-monitoring-title').innerText = item.title || `Progress Monitoring ${currentProgressMonitoringIndex + 1}`;
+            document.getElementById('progress-monitoring-info-category').innerText = item.category || '-';
+            document.getElementById('progress-monitoring-info-platform').innerText = platform || '-';
+            document.getElementById('progress-monitoring-info-remark').innerText = item.remark || '-';
+
+            const openLink = document.getElementById('progress-monitoring-open-link');
+            openLink.href = embedUrl || '#';
+            openLink.innerText = embedUrl ? 'Open dashboard' : 'No link';
+
+            badge.innerText = statusText;
+            badge.className = 'project-data-status-badge';
+            if (statusLower.includes('active') || statusLower.includes('online') || statusLower.includes('aktif')) badge.classList.add('active');
+            else if (statusLower.includes('warning') || statusLower.includes('maintenance') || statusLower.includes('review') || statusLower.includes('draft')) badge.classList.add('warning');
+            else badge.classList.add('offline');
+
+            document.querySelectorAll('#progress-monitoring-tabs .gallery-tab').forEach((tab, index) => {
+                tab.classList.toggle('active', index === currentProgressMonitoringIndex);
+            });
+
+            loadProgressMonitoringEmbed(item);
+        }
+
+        function selectProgressMonitoring(index) {
+            currentProgressMonitoringIndex = index;
+            updateProgressMonitoringDisplay();
+        }
+
+        function fetchAndRenderProgressMonitoring() {
+            Papa.parse(PROGRESS_MONITORING_CSV_URL, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    const data = results.data || [];
+
+                    progressMonitoringList = data.map((row, index) => {
+                        const cleanRow = {};
+                        for (let key in row) {
+                            cleanRow[String(key).toUpperCase().replace(/[^A-Z0-9]/g, '')] = row[key];
+                        }
+
+                        const title = getCleanValue(cleanRow, ['TITLE', 'DASHBOARDNAME', 'NAMADASHBOARD', 'REPORTNAME', 'NAMAREPORT', 'PROGRESSMONITORING', 'MONITORING', 'NAMA', 'NAME'], `Progress Monitoring ${index + 1}`);
+                        const description = getCleanValue(cleanRow, ['DESCRIPTION', 'DESKRIPSI'], '');
+                        const category = getCleanValue(cleanRow, ['CATEGORY', 'KATEGORI', 'GROUP', 'MENU', 'SECTION', 'MODUL', 'MODULE'], '-');
+                        const platformRaw = getCleanValue(cleanRow, ['PLATFORM', 'TYPE', 'EMBEDTYPE', 'SOURCETYPE', 'JENIS', 'FORMAT', 'TIPE'], 'Auto');
+                        const url = getCleanValue(cleanRow, ['EMBEDURL', 'IFRAMESRC', 'IFRAME', 'URL', 'LINK', 'LINKWEB', 'WEBLINK', 'DASHBOARDURL', 'REPORTURL', 'POWERBI', 'LOOKER', 'DATASTUDIO'], '');
+                        const status = getCleanValue(cleanRow, ['STATUS', 'CONDITION', 'KONDISI'], 'Active');
+                        const remark = getCleanValue(cleanRow, ['REMARK', 'KETERANGAN', 'NOTES', 'CATATAN'], '-');
+
+                        return { title, description, category, platform: platformRaw, url, status, remark };
+                    }).filter(item => item.url);
+
+                    if (progressMonitoringList.length === 0) {
+                        document.getElementById('progress-monitoring-loading').innerHTML = 'Tidak ada data Progress Monitoring yang ditemukan. Pastikan spreadsheet punya kolom URL/Link/EmbedURL.';
+                        return;
+                    }
+
+                    const tabsContainer = document.getElementById('progress-monitoring-tabs');
+                    tabsContainer.innerHTML = '';
+
+                    progressMonitoringList.forEach((item, index) => {
+                        const btn = document.createElement('div');
+                        btn.className = 'gallery-tab';
+                        btn.innerText = item.description || item.title;
+                        btn.title = item.description || item.title;
+                        btn.onclick = () => selectProgressMonitoring(index);
+                        tabsContainer.appendChild(btn);
+                    });
+
+                    document.getElementById('progress-monitoring-loading').style.display = 'none';
+                    document.getElementById('progress-monitoring-content').style.display = 'block';
+
+                    selectProgressMonitoring(0);
+                    log(`✅ Progress Monitoring: Menampilkan ${progressMonitoringList.length} embed dari Spreadsheet`, 'success');
+                },
+                error: function(err) {
+                    document.getElementById('progress-monitoring-loading').innerHTML = '<span style="color:red;">Gagal memuat Progress Monitoring dari spreadsheet.</span>';
+                    log('❌ Progress Monitoring CSV gagal dimuat', 'error');
+                }
+            });
+        }
+
+
+        // ===== INITIALIZATION =====
         window.addEventListener('load', () => {
+            initMap();
             initSCurveChart();
             updateDashboard(CONFIG.DEMO_DATA, false); 
-            setTimeout(fetchDashboardData, 1000); 
+            setTimeout(fetchDashboardData, 1000);
+            setTimeout(fetchAndRenderGallery, 1500);
+            setTimeout(fetchAndRenderCCTV, 1800);
+            setTimeout(fetchAndRenderProgressMonitoring, 2000);
+            setTimeout(fetchAndRenderProjectData, 2200);
         });
 
     </script>
