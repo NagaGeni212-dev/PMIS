@@ -1751,7 +1751,9 @@
                     cctvDataList.forEach((camera, index) => {
                         const btn = document.createElement('div');
                         btn.className = 'gallery-tab';
-                        btn.innerText = camera.name;
+                        const tabLabel = (camera.location && camera.location !== '-') ? camera.location : camera.name;
+                        btn.innerText = tabLabel;
+                        btn.title = camera.name ? `${camera.name} - ${camera.location || '-'}` : tabLabel;
                         btn.onclick = () => selectCctv(index);
                         tabsContainer.appendChild(btn);
                     });
