@@ -220,7 +220,8 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 12px;
-            height: 280px;
+            height: auto;
+            min-height: 280px;
         }
 
         .map-card {
@@ -635,7 +636,8 @@
         @media (max-width: 1200px) {
             .maps-row { 
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                height: 250px;
+                height: auto;
+                min-height: 250px;
             }
             .map-card {
                 min-height: 250px;
@@ -645,7 +647,7 @@
         @media (max-width: 768px) {
             .maps-row { 
                 grid-template-columns: 1fr;
-                height: 280px;
+                height: auto;
             }
             .map-card {
                 min-height: 280px;
@@ -677,7 +679,7 @@
                 padding: 6px 8px;
             }
             .maps-row {
-                height: 220px;
+                height: auto;
             }
             .map-card {
                 min-height: 220px;
